@@ -39,18 +39,30 @@ window.addEventListener('load', function() {
     }
 });
 
-document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+const homeLink = document.querySelector('a[href="#home"]');
+const eventsLink = document.querySelector('a[href="#events"]');
+const registerLink = document.querySelector('a[href="#register"]');
+
+if (homeLink) {
+    homeLink.addEventListener('click', function(e) {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
+        document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
     });
-});
+}
+
+if (eventsLink) {
+    eventsLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('events').scrollIntoView({ behavior: 'smooth' });
+    });
+}
+
+if (registerLink) {
+    registerLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+    });
+}
 
 document.getElementById('name').addEventListener('input', function() {
     if (this.value.length < 2) {
@@ -61,7 +73,7 @@ document.getElementById('name').addEventListener('input', function() {
 });
 
 document.getElementById('email').addEventListener('input', function() {
-    let emailPattern ;
+    let emailPattern;
     if (!emailPattern.test(this.value)) {
         this.style.borderColor = '#e74c3c';
     } else {
@@ -70,21 +82,9 @@ document.getElementById('email').addEventListener('input', function() {
 });
 
 document.getElementById('phone').addEventListener('input', function() {
-    let phonePattern;
-    if (!phonePattern.test(this.value) || this.value.length < 10) {
-        this.style.borderColor = '#e74c3c';
+    if (this.value.length < 10) {
+        this.style.borderColor = 'red';
     } else {
-        this.style.borderColor = '#27ae60';
+        this.style.borderColor = 'green';
     }
-});
-
-document.querySelectorAll('.event-card').forEach(card => {
-    card.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-5px)';
-        this.style.transition = 'transform 0.3s ease';
-    });
-    
-    card.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0)';
-    });
 });

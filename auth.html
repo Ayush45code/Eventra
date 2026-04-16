@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Login-College Event Manager</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f2f2f2;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+.container{
+  width:100%;
+  max-width:420px;
+  padding:20px;
+}
+
+.card{
+  background:white;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+h1{
+  text-align:center;
+  margin-bottom:5px;
+}
+
+p{
+  text-align:center;
+  color:gray;
+  margin-bottom:20px;
+}
+
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.tabs button{
+  padding:10px;
+  border:none;
+  background:#ddd;
+  cursor:pointer;
+  border-radius:6px;
+}
+
+.tabs button.active{
+  background:#2563eb;
+  color:white;
+}
+
+.form{
+  display:none;
+}
+
+.form.active{
+  display:block;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+input,select{
+  width:100%;
+  padding:10px;
+  margin-bottom:12px;
+  border:1px solid #ccc;
+  border-radius:6px;
+}
+
+button.submit{
+  width:100%;
+  padding:10px;
+  border:none;
+  background:#2563eb;
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+button.submit:hover{
+  background:#1d4ed8;
+}
+
+.msg{
+  text-align:center;
+  margin-bottom:15px;
+  color:green;
+}
+
+.error{
+  color:red;
+}
+
+@media(max-width:500px){
+  .row{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="card">
+
+    <h1>🎓 College Event Manager</h1>
+    <p>Your campus, your events</p>
+
+    <div class="tabs">
+      <button id="loginBtn" class="active">Login</button>
+      <button id="registerBtn">Register</button>
+    </div>
+
+    <div id="message" class="msg"></div>
+
+    <!-- ************* LOGIN ************** -->
+    <div id="loginForm" class="form active">
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button class="submit" onclick="login()">Login</button>
+    </div>
+
+    <!-- ************* Register ******************* -->
+
+<div id="registerForm" class="form">
+
+  <input type="text" id="name" placeholder="Full Name">
+
+  <input type="email" id="regEmail" placeholder="Email">
+
+  <input type="text" id="roll" placeholder="Roll Number">
+
+  ************ Drop down options **************
+  <select id="dept">
+    <option value="">Select Department</option>
+    <option>Computer Science</option>
+    <option>Electronics</option>
+    <option>Electrical</option>
+    <option>EIA</option>
+  </select>
+
+  <input type="password" id="regPassword" placeholder="Password">
+
+  <button class="submit" onclick="register()">Create Account</button>
+
+</div>
+
+  </div>
+</div>
+</body>
+</html>

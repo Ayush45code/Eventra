@@ -146,7 +146,7 @@ button.submit:hover{
 
   <input type="text" id="roll" placeholder="Roll Number">
 
-  ************ Drop down options **************
+  <!-- ************ Drop down options ************** -->
   <select id="dept">
     <option value="">Select Department</option>
     <option>Computer Science</option>
@@ -160,7 +160,69 @@ button.submit:hover{
   <button class="submit" onclick="register()">Create Account</button>
 
 </div>
+<!-- ********* java Script ******** -->
+<script>
+let loginBtn = document.getElementById("loginBtn");
+let registerBtn = document.getElementById("registerBtn");
 
+let loginForm = document.getElementById("loginForm");
+let registerForm = document.getElementById("registerForm");
+
+let message = document.getElementById("message");
+
+loginBtn.onclick = function(){
+  loginForm.classList.add("active");
+  registerForm.classList.remove("active");
+
+  loginBtn.classList.add("active");
+  registerBtn.classList.remove("active");
+
+  message.innerHTML = "";
+}
+
+registerBtn.onclick = function(){
+  registerForm.classList.add("active");
+  loginForm.classList.remove("active");
+
+  registerBtn.classList.add("active");
+  loginBtn.classList.remove("active");
+
+  message.innerHTML = "";
+}
+
+// ************* Login Function **********
+
+function login(){
+  let email = document.getElementById("loginEmail").value;
+  let pass = document.getElementById("loginPassword").value;
+
+  if(email=="" || pass==""){
+    message.innerHTML="Fill all fields";
+    message.className="msg error";
+    return;
+  }
+
+  message.innerHTML="Login Successful";
+  message.className="msg";
+}
+
+// ************* Register Function *********
+
+function register(){
+  let first = document.getElementById("firstName").value;
+  let email = document.getElementById("regEmail").value;
+  let dept = document.getElementById("dept").value;
+
+  if(first=="" || email=="" || dept==""){
+    message.innerHTML="Fill all fields";
+    message.className="msg error";
+    return;
+  }
+
+  message.innerHTML="Account Created Successfully";
+  message.className="msg";
+}
+</script>
   </div>
 </div>
 </body>

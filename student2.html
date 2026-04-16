@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student 2 - User Experience Features</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-bottom: 1rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background: #34495e;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            background: white;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        section h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .user-filter {
+            background: #ecf0f1;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .user-filter button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 1rem;
+            transition: background 0.3s;
+        }
+
+        .user-filter button:hover {
+            background: #2980b9;
+        }
+
+        .no-events {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            padding: 2rem;
+        }
+
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .profile-info {
+            background: #ecf0f1;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .profile-stats {
+            background: #ecf0f1;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .profile-stats h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 1rem;
+            border-left: 4px solid #3498db;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .user-event-card {
+            background: #ecf0f1;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        .user-event-card h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .user-event-card p {
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        .user-event-card .registration-date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .save-profile-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .save-profile-btn:hover {
+            background: #229954;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-filter button {
+                display: block;
+                margin: 1rem 0 0 0;
+                width: 100%;
+            }
+            
+            nav a {
+                display: block;
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Student 2 - User Experience Features</h1>
+        <nav>
+            <a href="#my-events">My Events</a>
+            <a href="#profile">Profile</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="my-events">
+            <h2>My Registered Events</h2>
+            <div class="user-filter">
+                <div class="form-group">
+                    <label for="userEmailFilter">Enter your email to view your events:</label>
+                    <input type="email" id="userEmailFilter" placeholder="your.email@example.com">
+                    <button onclick="filterUserEvents()">View My Events</button>
+                </div>
+            </div>
+            <div id="userEventsList" class="event-list">
+                <p class="no-events">Please enter your email to view your registered events</p>
+            </div>
+        </section>
+
+        <section id="profile">
+            <h2>User Profile</h2>
+            <div class="profile-container">
+                <div class="profile-info">
+                    <div class="form-group">
+                        <label for="profileName">Full Name:</label>
+                        <input type="text" id="profileName" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="profileEmail">Email:</label>
+                        <input type="email" id="profileEmail" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="profilePhone">Phone:</label>
+                        <input type="tel" id="profilePhone" placeholder="Enter your phone number">
+                    </div>
+                    <div class="form-group">
+                        <label for="profileDepartment">Department:</label>
+                        <input type="text" id="profileDepartment" placeholder="Enter your department">
+                    </div>
+                    <div class="form-group">
+                        <label for="profileYear">Year:</label>
+                        <select id="profileYear">
+                            <option value="">Select Year</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                    <button class="save-profile-btn" onclick="saveProfile()">Save Profile</button>
+                </div>
+                <div class="profile-stats">
+                    <h3>Your Statistics</h3>
+                    <div class="stat-card">
+                        <span class="stat-number" id="totalEvents">0</span>
+                        <span class="stat-label">Total Events Registered</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="upcomingEvents">0</span>
+                        <span class="stat-label">Upcoming Events</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Sample data for demonstration
+        let registrations = [
+            {
+                id: 1,
+                name: "John Doe",
+                email: "john@example.com",
+                event: "Tech Symposium",
+                phone: "1234567890",
+                date: "12/10/2024"
+            },
+            {
+                id: 2,
+                name: "Jane Smith",
+                email: "jane@example.com",
+                event: "Basketball Tournament",
+                phone: "9876543210",
+                date: "12/11/2024"
+            },
+            {
+                id: 3,
+                name: "John Doe",
+                email: "john@example.com",
+                event: "Cultural Fest",
+                phone: "1234567890",
+                date: "12/12/2024"
+            }
+        ];
+
+        // Navigation
+        const myEventsLink = document.querySelector('a[href="#my-events"]');
+        const profileLink = document.querySelector('a[href="#profile"]');
+
+        if (myEventsLink) {
+            myEventsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('my-events').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        if (profileLink) {
+            profileLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('profile').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        // Filter user events
+        function filterUserEvents() {
+            const userEmail = document.getElementById('userEmailFilter').value.trim();
+            
+            if (!userEmail) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            const userRegistrations = registrations.filter(reg => 
+                reg.email.toLowerCase() === userEmail.toLowerCase()
+            );
+            
+            const userEventsList = document.getElementById('userEventsList');
+            
+            if (userRegistrations.length === 0) {
+                userEventsList.innerHTML = '<p class="no-events">No events found for this email address</p>';
+                return;
+            }
+            
+            let eventsHTML = '';
+            userRegistrations.forEach(registration => {
+                eventsHTML += `
+                    <div class="user-event-card">
+                        <h4>${registration.event}</h4>
+                        <p><strong>Name:</strong> ${registration.name}</p>
+                        <p><strong>Email:</strong> ${registration.email}</p>
+                        <p><strong>Phone:</strong> ${registration.phone}</p>
+                        <p class="registration-date"><strong>Registered on:</strong> ${registration.date}</p>
+                    </div>
+                `;
+            });
+            
+            userEventsList.innerHTML = eventsHTML;
+        }
+
+        // Save profile
+        function saveProfile() {
+            const profile = {
+                name: document.getElementById('profileName').value,
+                email: document.getElementById('profileEmail').value,
+                phone: document.getElementById('profilePhone').value,
+                department: document.getElementById('profileDepartment').value,
+                year: document.getElementById('profileYear').value
+            };
+            
+            if (!profile.email) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            localStorage.setItem('userProfile', JSON.stringify(profile));
+            alert('Profile saved successfully!');
+            updateUserStats(profile.email);
+        }
+
+        // Load profile
+        function loadProfile() {
+            const storedProfile = localStorage.getItem('userProfile');
+            if (storedProfile) {
+                const profile = JSON.parse(storedProfile);
+                document.getElementById('profileName').value = profile.name || '';
+                document.getElementById('profileEmail').value = profile.email || '';
+                document.getElementById('profilePhone').value = profile.phone || '';
+                document.getElementById('profileDepartment').value = profile.department || '';
+                document.getElementById('profileYear').value = profile.year || '';
+                
+                if (profile.email) {
+                    updateUserStats(profile.email);
+                }
+            }
+        }
+
+        // Update user statistics
+        function updateUserStats(userEmail) {
+            const userRegistrations = registrations.filter(reg => 
+                reg.email.toLowerCase() === userEmail.toLowerCase()
+            );
+            
+            document.getElementById('totalEvents').textContent = userRegistrations.length;
+            
+            const today = new Date();
+            const upcomingEvents = userRegistrations.filter(reg => {
+                const eventDate = new Date(reg.date);
+                return eventDate >= today;
+            });
+            
+            document.getElementById('upcomingEvents').textContent = upcomingEvents.length;
+        }
+
+        // Load profile on page load
+        window.addEventListener('load', function() {
+            loadProfile();
+        });
+    </script>
+</body>
+</html>

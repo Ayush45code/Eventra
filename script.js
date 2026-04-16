@@ -78,6 +78,7 @@ window.addEventListener('load', function() {
     updateEventCapacity();
     displayEvents();
     displayRegistrations();
+    loadProfile();
 });
 
 document.getElementById('searchInput').addEventListener('input', filterEvents);
@@ -133,9 +134,15 @@ function updateEventCapacity() {
     });
 }
 
+function displayRegistrations() {
+    // This function can be used to display all registrations for admin view
+    console.log('Total registrations:', registrations.length);
+}
 const homeLink = document.querySelector('a[href="#home"]');
 const eventsLink = document.querySelector('a[href="#events"]');
 const registerLink = document.querySelector('a[href="#register"]');
+const myEventsLink = document.querySelector('a[href="#my-events"]');
+const profileLink = document.querySelector('a[href="#profile"]');
 
 if (homeLink) {
     homeLink.addEventListener('click', function(e) {
@@ -158,6 +165,20 @@ if (registerLink) {
     });
 }
 
+if (myEventsLink) {
+    myEventsLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('my-events').scrollIntoView({ behavior: 'smooth' });
+    });
+}
+
+if (profileLink) {
+    profileLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('profile').scrollIntoView({ behavior: 'smooth' });
+    });
+}
+
 document.getElementById('name').addEventListener('input', function() {
     if (this.value.length < 2) {
         this.style.borderColor = '#e74c3c';
@@ -167,7 +188,7 @@ document.getElementById('name').addEventListener('input', function() {
 });
 
 document.getElementById('email').addEventListener('input', function() {
-    let emailPattern;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(this.value)) {
         this.style.borderColor = '#e74c3c';
     } else {
@@ -181,4 +202,151 @@ document.getElementById('phone').addEventListener('input', function() {
     } else {
         this.style.borderColor = 'green';
     }
+});
+
+// Student 2 Features - My Registered Events
+function filterUserEvents() {
+    const userEmail = document.getElementById('userEmailFilter').value.trim();
+    
+    if (!userEmail) {
+        alert('Please enter your email address');
+        return;
+    }
+    
+    const userRegistrations = registrations.filter(reg => 
+        reg.email.toLowerCase() === userEmail.toLowerCase()
+    );
+    
+    const userEventsList = document.getElementById('userEventsList');
+    
+    if (userRegistrations.length === 0) {
+        userEventsList.innerHTML = '<p class="no-events">No events found for this email address</p>';
+        return;
+    }
+    
+    let eventsHTML = '';
+    userRegistrations.forEach(registration => {
+        eventsHTML += `
+            <div class="user-event-card">
+                <h4>${registration.event}</h4>
+                <p><strong>Name:</strong> ${registration.name}</p>
+                <p><strong>Email:</strong> ${registration.email}</p>
+                <p><strong>Phone:</strong> ${registration.phone}</p>
+                <p class="registration-date"><strong>Registered on:</strong> ${registration.date}</p>
+            </div>
+        `;
+    });
+    
+    userEventsList.innerHTML = eventsHTML;
+}
+
+// Student 2 Features - User Profile
+function saveProfile() {
+    const profile = {
+        name: document.getElementById('profileName').value,
+        email: document.getElementById('profileEmail').value,
+        phone: document.getElementById('profilePhone').value,
+        department: document.getElementById('profileDepartment').value,
+        year: document.getElementById('profileYear').value
+    };
+    
+    if (!profile.email) {
+        alert('Please enter your email address');
+        return;
+    }
+    
+    localStorage.setItem('userProfile', JSON.stringify(profile));
+    alert('Profile saved successfully!');
+    updateUserStats(profile.email);
+}
+
+function loadProfile() {
+    const storedProfile = localStorage.getItem('userProfile');
+    if (storedProfile) {
+        const profile = JSON.parse(storedProfile);
+        document.getElementById('profileName').value = profile.name || '';
+        document.getElementById('profileEmail').value = profile.email || '';
+        document.getElementById('profilePhone').value = profile.phone || '';
+        document.getElementById('profileDepartment').value = profile.department || '';
+        document.getElementById('profileYear').value = profile.year || '';
+        
+        if (profile.email) {
+            updateUserStats(profile.email);
+        }
+    }
+}
+
+function updateUserStats(userEmail) {
+    const userRegistrations = registrations.filter(reg => 
+        reg.email.toLowerCase() === userEmail.toLowerCase()
+    );
+    
+    document.getElementById('totalEvents').textContent = userRegistrations.length;
+    
+    const today = new Date();
+    const upcomingEvents = userRegistrations.filter(reg => {
+        const eventDate = new Date(reg.date);
+        return eventDate >= today;
+    });
+    
+    document.getElementById('upcomingEvents').textContent = upcomingEvents.length;
+}
+
+function saveProfile() {
+    const profile = {
+        name: document.getElementById('profileName').value,
+        email: document.getElementById('profileEmail').value,
+        phone: document.getElementById('profilePhone').value,
+        department: document.getElementById('profileDepartment').value,
+        year: document.getElementById('profileYear').value
+    };
+    
+    if (!profile.email) {
+        alert('Please enter your email address');
+        return;
+    }
+    
+    localStorage.setItem('userProfile', JSON.stringify(profile));
+    alert('Profile saved successfully!');
+    updateUserStats(profile.email);
+}
+
+function loadProfile() {
+    const storedProfile = localStorage.getItem('userProfile');
+    if (storedProfile) {
+        const profile = JSON.parse(storedProfile);
+        document.getElementById('profileName').value = profile.name || '';
+        document.getElementById('profileEmail').value = profile.email || '';
+        document.getElementById('profilePhone').value = profile.phone || '';
+        document.getElementById('profileDepartment').value = profile.department || '';
+        document.getElementById('profileYear').value = profile.year || '';
+        
+        if (profile.email) {
+            updateUserStats(profile.email);
+        }
+    }
+}
+
+function updateUserStats(userEmail) {
+    const userRegistrations = registrations.filter(reg => 
+        reg.email.toLowerCase() === userEmail.toLowerCase()
+    );
+    
+    document.getElementById('totalEvents').textContent = userRegistrations.length;
+    
+    const today = new Date();
+    const upcomingEvents = userRegistrations.filter(reg => {
+        const eventDate = new Date(reg.date);
+        return eventDate >= today;
+    });
+    
+    document.getElementById('upcomingEvents').textContent = upcomingEvents.length;
+}
+
+window.addEventListener('load', function() {
+    const stored = localStorage.getItem('eventRegistrations');
+    if (stored) {
+        registrations = JSON.parse(stored);
+    }
+    loadProfile();
 });

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventra - Full Event Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .event-management {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .event-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .event-list-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .event-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .event-item:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+        }
+        
+        .event-item.selected {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+        
+        .event-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .event-details {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+        }
+        
+        .close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #dc3545;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Eventra - Full Event Management</h1>
+        <nav>
+            <a href="#" onclick="showPage('home'); return false;">Home</a>
+            <a href="#" onclick="showPage('events'); return false;">Events</a>
+            <a href="#" onclick="showPage('manage-events'); return false;">Manage Events</a>
+            <a href="#" onclick="showPage('login'); return false;">Login</a>
+            <a href="#" onclick="showPage('register'); return false;">Register</a>
+            <a href="#" onclick="showPage('profile'); return false;">Profile</a>
+            <a href="#" onclick="showPage('admin'); return false;">Admin</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="active">
+            <h2>Welcome to Eventra</h2>
+            <p>Complete Event Management System</p>
+            
+            <div class="login-info" style="background: #e7f3ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h3>🔑 Quick Login Guide</h3>
+                <p><strong>Admin Access:</strong> username: <code>admin</code>, password: <code>admin123</code></p>
+                <p><strong>Regular User:</strong> username: <code>john_doe</code>, password: <code>password123</code></p>
+                <p><strong>Organizer:</strong> username: <code>jane_smith</code>, password: <code>password123</code></p>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalEvents">0</div>
+                    <div class="stat-label">Total Events</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalRegistrations">0</div>
+                    <div class="stat-label">Total Registrations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="upcomingEvents">0</div>
+                    <div class="stat-label">Upcoming Events</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="events">
+            <h2>Browse Events</h2>
+            
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="Search events...">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="tech">Tech</option>
+                    <option value="sports">Sports</option>
+                    <option value="cultural">Cultural</option>
+                </select>
+                <input type="date" id="dateFilter">
+            </div>
+            
+            <div class="event-list" id="eventList">
+                <p>Loading events...</p>
+            </div>
+            
+            <div class="registration-info" style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h3>📝 How to Register for Events</h3>
+                <p>1. <strong>Login first</strong> with any of the accounts above</p>
+                <p>2. <strong>Browse events</strong> below - click on any event to see details</p>
+                <p>3. <strong>Register</strong> using the "Register" button or event modal</p>
+                <p>4. <strong>Check your profile</strong> to see registered events</p>
+            </div>
+        </section>
+
+        <section id="manage-events">
+            <h2>Manage Events</h2>
+            
+            <div class="event-management">
+                <div class="event-form">
+                    <h3 id="formTitle">Add New Event</h3>
+                    <form id="eventForm">
+                        <input type="hidden" id="eventId" value="">
+                        
+                        <div class="form-group">
+                            <label for="eventTitle">Event Title *</label>
+                            <input type="text" id="eventTitle" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="eventCategory">Category *</label>
+                            <select id="eventCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="tech">Tech</option>
+                                <option value="sports">Sports</option>
+                                <option value="cultural">Cultural</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="eventDescription">Description *</label>
+                            <textarea id="eventDescription" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="eventDate">Date *</label>
+                            <input type="date" id="eventDate" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="eventTime">Time *</label>
+                            <input type="time" id="eventTime" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="eventLocation">Location *</label>
+                            <input type="text" id="eventLocation" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="eventMaxParticipants">Max Participants *</label>
+                            <input type="number" id="eventMaxParticipants" min="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="eventPrice">Price ($) *</label>
+                            <input type="number" id="eventPrice" min="0" step="0.01" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="eventImageUrl">Image URL</label>
+                            <input type="url" id="eventImageUrl" placeholder="https://example.com/image.jpg">
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Save Event</button>
+                            <button type="button" class="btn btn-warning" onclick="resetEventForm()">Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="event-list-container">
+                    <h3>Existing Events</h3>
+                    <div id="manageEventList">
+                        <p>Loading events...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="login">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">Username:</label>
+                    <input type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </section>
+
+        <section id="register">
+            <h2>Register</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerUsername">Username:</label>
+                    <input type="text" id="registerUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password:</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerFullName">Full Name:</label>
+                    <input type="text" id="registerFullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPhone">Phone:</label>
+                    <input type="tel" id="registerPhone">
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </section>
+
+        <section id="profile">
+            <h2>User Profile</h2>
+            <form id="profileForm">
+                <div class="form-group">
+                    <label for="profileName">Full Name:</label>
+                    <input type="text" id="profileName" required>
+                </div>
+                <div class="form-group">
+                    <label for="profileEmail">Email:</label>
+                    <input type="email" id="profileEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="profilePhone">Phone:</label>
+                    <input type="tel" id="profilePhone">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
+            </form>
+        </section>
+
+        <section id="admin">
+            <h2>Admin Dashboard</h2>
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <h3>Total Events</h3>
+                    <p id="adminTotalEvents">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Registrations</h3>
+                    <p id="adminTotalRegistrations">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <p id="adminTotalUsers">0</p>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="refreshDashboard()">Refresh Dashboard</button>
+        </section>
+    </main>
+
+    <!-- Event Detail Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEventModal()">&times;</span>
+            <h2 id="modalEventTitle">Event Details</h2>
+            <div id="modalEventContent"></div>
+            <div class="modal-actions">
+                <button class="btn btn-success" onclick="registerForSelectedEvent()">Register for Event</button>
+                <button class="btn btn-danger" onclick="deleteSelectedEvent()">Delete Event</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Eventra - Full Event Management System</p>
+    </footer>
+
+    <script src="script-backend.js"></script>
+    <script>
+        let selectedEvent = null;
+        let isEditingEvent = false;
+
+        // Enhanced event management functions
+        function showEventForm() {
+            const form = document.getElementById('eventForm');
+            const formTitle = document.getElementById('formTitle');
+            
+            // Only add mode now
+            formTitle.textContent = 'Add New Event';
+            form.reset();
+            document.getElementById('eventId').value = '';
+            isEditingEvent = false;
+        }
+
+        function resetEventForm() {
+            document.getElementById('eventForm').reset();
+            document.getElementById('eventId').value = '';
+            document.getElementById('formTitle').textContent = 'Add New Event';
+            isEditingEvent = false;
+            selectedEvent = null;
+        }
+
+        async function saveEvent() {
+            const eventData = {
+                title: document.getElementById('eventTitle').value,
+                category: document.getElementById('eventCategory').value,
+                description: document.getElementById('eventDescription').value,
+                date: document.getElementById('eventDate').value,
+                time: document.getElementById('eventTime').value,
+                location: document.getElementById('eventLocation').value,
+                maxParticipants: parseInt(document.getElementById('eventMaxParticipants').value),
+                price: parseFloat(document.getElementById('eventPrice').value),
+                imageUrl: document.getElementById('eventImageUrl').value,
+                organizerId: currentUser ? currentUser.id : 1
+            };
+
+            try {
+                const result = await createEvent(eventData);
+
+                if (result.success) {
+                    alert('Event created successfully!');
+                    resetEventForm();
+                    await loadManageEvents();
+                    await loadEvents();
+                    displayEvents();
+                    updateStats();
+                } else {
+                    alert('Failed to create event: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error creating event: ' + error.message);
+            }
+        }
+
+        async function loadManageEvents() {
+            try {
+                const result = await apiCall('/events');
+                if (result.success) {
+                    displayManageEvents(result.events);
+                }
+            } catch (error) {
+                console.error('Failed to load events for management:', error);
+            }
+        }
+
+        function displayManageEvents(eventsToShow = events) {
+            const manageEventList = document.getElementById('manageEventList');
+            
+            if (eventsToShow.length === 0) {
+                manageEventList.innerHTML = '<p>No events found.</p>';
+                return;
+            }
+            
+            let html = '';
+            eventsToShow.forEach(event => {
+                html += `
+                    <div class="event-item" onclick="selectEvent(${event.id})">
+                        <h4>${event.title}</h4>
+                        <div class="event-details">
+                            <p><strong>Category:</strong> ${event.category}</p>
+                            <p><strong>Date:</strong> ${event.date} at ${event.time}</p>
+                            <p><strong>Location:</strong> ${event.location}</p>
+                            <p><strong>Price:</strong> $${event.price}</p>
+                            <p><strong>Participants:</strong> ${event.currentParticipants}/${event.maxParticipants}</p>
+                        </div>
+                        <div class="event-actions">
+                            <button class="btn btn-danger" onclick="deleteEvent(${event.id}); event.stopPropagation();">Delete Event</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            manageEventList.innerHTML = html;
+        }
+
+        function selectEvent(eventId) {
+            const event = events.find(e => e.id === eventId);
+            if (event) {
+                selectedEvent = event;
+                showEventModal(event);
+            }
+        }
+
+        
+        async function deleteEvent(eventId) {
+            if (confirm('Are you sure you want to delete this event?')) {
+                try {
+                    const result = await apiCall(`/events/${eventId}`, 'DELETE');
+                    if (result.success) {
+                        alert('Event deleted successfully!');
+                        await loadManageEvents();
+                        await loadEvents();
+                        displayEvents();
+                        updateStats();
+                    } else {
+                        alert('Failed to delete event: ' + result.message);
+                    }
+                } catch (error) {
+                    alert('Error deleting event: ' + error.message);
+                }
+            }
+        }
+
+        function showEventModal(event) {
+            const modal = document.getElementById('eventModal');
+            const modalTitle = document.getElementById('modalEventTitle');
+            const modalContent = document.getElementById('modalEventContent');
+            
+            modalTitle.textContent = event.title;
+            modalContent.innerHTML = `
+                <p><strong>Category:</strong> ${event.category}</p>
+                <p><strong>Description:</strong> ${event.description}</p>
+                <p><strong>Date:</strong> ${event.date}</p>
+                <p><strong>Time:</strong> ${event.time}</p>
+                <p><strong>Location:</strong> ${event.location}</p>
+                <p><strong>Price:</strong> $${event.price}</p>
+                <p><strong>Participants:</strong> ${event.currentParticipants}/${event.maxParticipants}</p>
+                <p><strong>Status:</strong> ${event.status}</p>
+                ${event.imageUrl ? `<img src="${event.imageUrl}" alt="${event.title}" style="max-width: 100%; height: auto;">` : ''}
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        function closeEventModal() {
+            document.getElementById('eventModal').style.display = 'none';
+        }
+
+        async function registerForSelectedEvent() {
+            if (!currentUser) {
+                alert('Please login first to register for events!');
+                showPage('login');
+                return;
+            }
+            
+            if (selectedEvent) {
+                try {
+                    const result = await registerForEvent(selectedEvent.id, currentUser.id);
+                    if (result.success) {
+                        alert('Successfully registered for ' + selectedEvent.title + '!');
+                        closeEventModal();
+                        await loadEvents();
+                        displayEvents();
+                        await loadManageEvents();
+                        updateStats();
+                    } else {
+                        alert('Registration failed: ' + result.message);
+                    }
+                } catch (error) {
+                    alert('Registration error: ' + error.message);
+                }
+            }
+        }
+
+        async function deleteSelectedEvent() {
+            if (selectedEvent) {
+                await deleteEvent(selectedEvent.id);
+                closeEventModal();
+            }
+        }
+
+        async function updateStats() {
+            try {
+                const result = await apiCall('/events');
+                if (result.success) {
+                    const eventsData = result.events;
+                    const totalEvents = eventsData.length;
+                    const totalRegistrations = eventsData.reduce((sum, event) => sum + event.currentParticipants, 0);
+                    const today = new Date().toISOString().split('T')[0];
+                    const upcomingEvents = eventsData.filter(event => event.date >= today).length;
+                    
+                    document.getElementById('totalEvents').textContent = totalEvents;
+                    document.getElementById('totalRegistrations').textContent = totalRegistrations;
+                    document.getElementById('upcomingEvents').textContent = upcomingEvents;
+                    document.getElementById('adminTotalEvents').textContent = totalEvents;
+                    document.getElementById('adminTotalRegistrations').textContent = totalRegistrations;
+                }
+            } catch (error) {
+                console.error('Failed to update stats:', error);
+            }
+        }
+
+        // Event form submission
+        document.getElementById('eventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveEvent();
+        });
+
+        // Display events for browsing
+        function displayEvents(eventsToShow = events) {
+            const eventList = document.getElementById('eventList');
+            
+            if (eventsToShow.length === 0) {
+                eventList.innerHTML = '<p>No events found.</p>';
+                return;
+            }
+            
+            let html = '';
+            eventsToShow.forEach(event => {
+                const isFull = event.currentParticipants >= event.maxParticipants;
+                const buttonStatus = isFull ? 'disabled' : '';
+                
+                html += `
+                    <div class="event-item" onclick="selectEvent(${event.id})" style="background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: all 0.3s ease;">
+                        <h3>${event.title}</h3>
+                        <div class="event-details">
+                            <p><strong>Category:</strong> ${event.category}</p>
+                            <p><strong>Date:</strong> ${event.date} at ${event.time}</p>
+                            <p><strong>Location:</strong> ${event.location}</p>
+                            <p><strong>Description:</strong> ${event.description}</p>
+                            <p><strong>Price:</strong> $${event.price}</p>
+                            <p><strong>Participants:</strong> ${event.currentParticipants}/${event.maxParticipants}</p>
+                        </div>
+                        <div class="event-actions">
+                            <button class="btn btn-success" onclick="registerForEventDirect(${event.id}); event.stopPropagation();" ${buttonStatus}>Register Now</button>
+                            <button class="btn btn-primary" onclick="showEventDetails(${event.id}); event.stopPropagation();">View Details</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            eventList.innerHTML = html;
+        }
+
+        function registerForEventDirect(eventId) {
+            if (!currentUser) {
+                alert('Please login first to register for events!');
+                showPage('login');
+                return;
+            }
+            
+            const event = events.find(e => e.id === eventId);
+            if (event) {
+                selectedEvent = event;
+                registerForSelectedEvent();
+            }
+        }
+
+        function showEventDetails(eventId) {
+            const event = events.find(e => e.id === eventId);
+            if (event) {
+                selectedEvent = event;
+                showEventModal(event);
+            }
+        }
+
+        // Enhanced page switching
+        function showPage(pageId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show the selected section
+            const selectedSection = document.getElementById(pageId);
+            if (selectedSection) {
+                selectedSection.classList.add('active');
+            }
+            
+            // Load data for specific pages
+            if (pageId === 'events') {
+                loadEvents().then(() => displayEvents());
+            } else if (pageId === 'manage-events') {
+                loadManageEvents();
+            } else if (pageId === 'profile') {
+                loadProfile();
+            } else if (pageId === 'home' || pageId === 'admin') {
+                updateStats();
+            }
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', async function() {
+            // Check if user is logged in
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+            }
+            
+            // Load events and stats
+            await loadEvents();
+            displayEvents();
+            updateStats();
+            
+            // Set up event listeners
+            document.getElementById('searchInput').addEventListener('input', filterEvents);
+            document.getElementById('categoryFilter').addEventListener('change', filterEvents);
+            document.getElementById('dateFilter').addEventListener('change', filterEvents);
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('eventModal');
+            if (event.target === modal) {
+                closeEventModal();
+            }
+        }
+    </script>
+</body>
+</html>

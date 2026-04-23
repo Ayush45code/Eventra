@@ -215,9 +215,9 @@ function updateDashboardCounters() {
     const uniqueUsers = new Set(registrations.map(reg => reg.email)).size;
     const totalRegistrations = registrations.length;
     
-    document.getElementById('totalEvents').textContent = totalEvents;
-    document.getElementById('totalUsers').textContent = uniqueUsers;
-    document.getElementById('totalRegistrations').textContent = totalRegistrations;
+    document.getElementById('adminTotalEvents').textContent = totalEvents;
+    document.getElementById('adminTotalUsers').textContent = uniqueUsers;
+    document.getElementById('adminTotalRegistrations').textContent = totalRegistrations;
 }
 
 function showRegistrations() {
@@ -274,7 +274,7 @@ function updateRegistrationStatus(registrationId, status) {
 }
 
 function searchRegistrations() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const searchTerm = document.getElementById('registrationSearchInput').value.toLowerCase();
     
     if (searchTerm === '') {
         displayRegistrations();

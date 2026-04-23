@@ -96,6 +96,19 @@ button.submit:hover{
   background:#1d4ed8;
 }
 
+.home-link{
+  display:block;
+  margin-top:16px;
+  text-align:center;
+  color:#2563eb;
+  text-decoration:none;
+  font-size:14px;
+}
+
+.home-link:hover{
+  text-decoration:underline;
+}
+
 .msg{
   text-align:center;
   margin-bottom:15px;
@@ -140,7 +153,7 @@ button.submit:hover{
 
 <div id="registerForm" class="form">
 
-  <input type="text" id="name" placeholder="Full Name">
+  <input type="text" id="regName" placeholder="Full Name">
 
   <input type="email" id="regEmail" placeholder="Email">
 
@@ -204,12 +217,13 @@ function login(){
 
   message.innerHTML="Login Successful";
   message.className="msg";
+  window.location.href = "index.html";
 }
 
 // ************* Register Function *********
 
 function register(){
-  let first = document.getElementById("firstName").value;
+  let first = document.getElementById("regName").value;
   let email = document.getElementById("regEmail").value;
   let dept = document.getElementById("dept").value;
 
@@ -221,8 +235,10 @@ function register(){
 
   message.innerHTML="Account Created Successfully";
   message.className="msg";
+  loginBtn.click();
 }
 </script>
+    <a class="home-link" href="index.html">Back to Home</a>
   </div>
 </div>
 </body>

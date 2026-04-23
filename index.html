@@ -16,6 +16,7 @@
             <a href="#my-events">My Events</a>
             <a href="#profile">Profile</a>
             <a href="#admin">Admin</a>
+            <a href="auth.html">Login</a>
         </nav>
     </header>
 
@@ -92,22 +93,21 @@
             </form>
         </section>
 
-<<<<<<< HEAD
         <section id="admin">
             <h2>Admin Dashboard</h2>
             
             <div class="dashboard-cards">
                 <div class="dashboard-card">
                     <h3>Total Events</h3>
-                    <div class="counter" id="totalEvents">3</div>
+                    <div class="counter" id="adminTotalEvents">3</div>
                 </div>
                 <div class="dashboard-card">
                     <h3>Total Users</h3>
-                    <div class="counter" id="totalUsers">0</div>
+                    <div class="counter" id="adminTotalUsers">0</div>
                 </div>
                 <div class="dashboard-card">
                     <h3>Total Registrations</h3>
-                    <div class="counter" id="totalRegistrations">0</div>
+                    <div class="counter" id="adminTotalRegistrations">0</div>
                 </div>
             </div>
 
@@ -120,13 +120,12 @@
         <section id="registrations" class="hidden">
             <h2>All Registrations</h2>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search by name, email, or event..." onkeyup="searchRegistrations()">
+                <input type="text" id="registrationSearchInput" placeholder="Search by name, email, or event..." onkeyup="searchRegistrations()">
             </div>
-            <div class="registrations-list" id="registrationsList">
-                <!-- Registrations will be populated here -->
-            </div>
+            <div class="registrations-list" id="registrationsList"></div>
             <button onclick="hideRegistrations()" class="back-btn">Back to Dashboard</button>
-=======
+        </section>
+
         <section id="my-events">
             <h2>My Registered Events</h2>
             <div class="user-filter">
@@ -185,7 +184,6 @@
                     </div>
                 </div>
             </div>
->>>>>>> f19cf06e987b988340da0aad516dc62c51dcca93
         </section>
     </main>
 

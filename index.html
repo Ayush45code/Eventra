@@ -10,18 +10,18 @@
     <header>
         <h1>College Event Manager</h1>
         <nav>
-            <a href="#home">Home</a>
-            <a href="#events">Events</a>
-            <a href="#register">Register</a>
-            <a href="#my-events">My Events</a>
-            <a href="#profile">Profile</a>
-            <a href="#admin">Admin</a>
+            <a href="#" onclick="showPage('home'); return false;">Home</a>
+            <a href="#" onclick="showPage('events'); return false;">Events</a>
+            <a href="#" onclick="showPage('register'); return false;">Register</a>
+            <a href="#" onclick="showPage('my-events'); return false;">My Events</a>
+            <a href="#" onclick="showPage('profile'); return false;">Profile</a>
+            <a href="#" onclick="showPage('admin'); return false;">Admin</a>
             <a href="auth.html">Login</a>
         </nav>
     </header>
 
     <main>
-        <section id="home">
+        <section id="home" class="active">
             <h2>Welcome to College Event Manager</h2>
             <p>Find and register for exciting college events</p>
         </section>
@@ -117,7 +117,7 @@
             </div>
         </section>
 
-        <section id="registrations" class="hidden">
+        <section id="registrations">
             <h2>All Registrations</h2>
             <div class="search-bar">
                 <input type="text" id="registrationSearchInput" placeholder="Search by name, email, or event..." onkeyup="searchRegistrations()">

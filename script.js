@@ -33,7 +33,7 @@ let events = [
 ];
 
 function showRegistration(eventName) {
-    document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+    showPage('register');
     document.getElementById('event').value = eventName;
     document.getElementById('name').focus();
 }
@@ -60,7 +60,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     
     alert('Registration successful! You have registered for: ' + event);
     this.reset();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showPage('home');
     console.log('New registration:', registration);
 });
 
@@ -138,45 +138,23 @@ function displayRegistrations() {
     // This function can be used to display all registrations for admin view
     console.log('Total registrations:', registrations.length);
 }
-const homeLink = document.querySelector('a[href="#home"]');
-const eventsLink = document.querySelector('a[href="#events"]');
-const registerLink = document.querySelector('a[href="#register"]');
-const myEventsLink = document.querySelector('a[href="#my-events"]');
-const profileLink = document.querySelector('a[href="#profile"]');
 
-if (homeLink) {
-    homeLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
+// SPA Page Switching
+function showPage(pageId) {
+    // Hide all sections
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+        section.classList.remove('active');
     });
-}
-
-if (eventsLink) {
-    eventsLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('events').scrollIntoView({ behavior: 'smooth' });
-    });
-}
-
-if (registerLink) {
-    registerLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
-    });
-}
-
-if (myEventsLink) {
-    myEventsLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('my-events').scrollIntoView({ behavior: 'smooth' });
-    });
-}
-
-if (profileLink) {
-    profileLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('profile').scrollIntoView({ behavior: 'smooth' });
-    });
+    
+    // Show the selected section
+    const selectedSection = document.getElementById(pageId);
+    if (selectedSection) {
+        selectedSection.classList.add('active');
+    }
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 document.getElementById('name').addEventListener('input', function() {
@@ -221,14 +199,12 @@ function updateDashboardCounters() {
 }
 
 function showRegistrations() {
-    document.getElementById('admin').classList.add('hidden');
-    document.getElementById('registrations').classList.remove('hidden');
+    showPage('registrations');
     displayRegistrations();
 }
 
 function hideRegistrations() {
-    document.getElementById('registrations').classList.add('hidden');
-    document.getElementById('admin').classList.remove('hidden');
+    showPage('admin');
 }
 
 function displayRegistrations(filteredRegistrations = null) {
@@ -290,15 +266,14 @@ function searchRegistrations() {
     displayRegistrations(filteredRegistrations);
 }
 
-// Admin navigation
-const adminLink = document.querySelector('a[href="#admin"]');
-if (adminLink) {
-    adminLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('admin').scrollIntoView({ behavior: 'smooth' });
+// Admin navigation - update dashboard when admin page is shown
+const originalShowPage = showPage;
+showPage = function(pageId) {
+    originalShowPage(pageId);
+    if (pageId === 'admin') {
         updateDashboardCounters();
-    });
-}
+    }
+};
 
 // Student 2 Features - My Registered Events
 function filterUserEvents() {

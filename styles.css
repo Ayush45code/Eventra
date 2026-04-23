@@ -4,6 +4,15 @@
     box-sizing: border-box;
 }
 
+/* SPA Page Switching */
+section {
+    display: none;
+}
+
+section.active {
+    display: block;
+}
+
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;

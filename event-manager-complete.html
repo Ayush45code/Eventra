@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Event Manager - Complete</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary-color: #22d3ee;
+            --accent-color: #f97316;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --dark-bg: #1e293b;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            z-index: -1;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+
+        header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+
+        nav a:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        nav a:hover::before {
+            opacity: 1;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            margin: 3rem 0;
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+        }
+
+        section h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            padding: 1.5rem;
+            background: var(--light-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .filters input,
+        .filters select {
+            padding: 0.875rem 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background: var(--card-bg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 200px;
+        }
+
+        .filters input:focus,
+        .filters select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .filters input {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .capacity {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .current {
+            color: #27ae60;
+        }
+
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .event-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .event-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .event-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-light);
+        }
+
+        .event-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-card h3::before {
+            content: '🎯';
+            font-size: 1.2rem;
+        }
+
+        .event-card p {
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        .event-card .capacity {
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            background: var(--light-bg);
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .current {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+
+        .event-card button {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .event-card button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .event-card button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .event-card button:hover::before {
+            left: 100%;
+        }
+
+        .event-card button:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            background: var(--card-bg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-group input:valid {
+            border-color: var(--success-color);
+        }
+
+        .form-group input:invalid:not(:placeholder-shown) {
+            border-color: var(--error-color);
+        }
+
+        form button {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+            border: none;
+            padding: 1.25rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        form button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        form button:hover::before {
+            left: 100%;
+        }
+
+        form button:active {
+            transform: translateY(0);
+        }
+
+        footer {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        #home {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        #home h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        #home p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-filter {
+            background: var(--light-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .user-filter button {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-filter button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .no-events {
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 3rem;
+            font-size: 1.1rem;
+            background: var(--light-bg);
+            border-radius: 12px;
+            border: 2px dashed var(--border-color);
+        }
+
+        .no-events::before {
+            content: '📅';
+            display: block;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-style: normal;
+        }
+
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 2.5rem;
+        }
+
+        .profile-info {
+            background: var(--light-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-stats {
+            background: var(--light-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-stats h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .user-event-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--success-color), var(--secondary-color));
+        }
+
+        .user-event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .user-event-card h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-event-card h4::before {
+            content: '✅';
+            font-size: 1.1rem;
+        }
+
+        .user-event-card p {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .user-event-card .registration-date {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-style: italic;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 1rem;
+        }
+
+        /* Admin Dashboard Styles */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(99, 102, 241, 0.3);
+        }
+
+        .dashboard-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+        }
+
+        .counter {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-btn {
+            background: linear-gradient(135deg, var(--accent-color), #ea580c);
+            color: white;
+            border: none;
+            padding: 1.25rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.3);
+        }
+
+        .admin-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Registration Management Styles */
+        .hidden {
+            display: none;
+        }
+
+        .search-bar {
+            margin-bottom: 2.5rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            background: var(--card-bg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .registrations-list {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            background: var(--light-bg);
+        }
+
+        .registrations-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .registrations-list::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .registrations-list::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .registration-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .registration-item:hover {
+            background: var(--light-bg);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .registration-info {
+            flex: 1;
+        }
+
+        .registration-info h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .registration-info p {
+            margin: 0.5rem 0;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .registration-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .approve-btn, .reject-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .approve-btn {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .approve-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .reject-btn {
+            background: linear-gradient(135deg, var(--error-color), #dc2626);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .reject-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .status-approved {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .status-rejected {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--text-primary), var(--dark-bg));
+            color: white;
+            border: none;
+            padding: 1.25rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 2.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn::before {
+            content: '←';
+            font-size: 1.2rem;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 41, 59, 0.3);
+        }
+
+        .save-profile-btn {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+            border: none;
+            padding: 1.25rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .save-profile-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .save-profile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .save-profile-btn:hover::before {
+            left: 100%;
+        }
+
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            nav {
+                gap: 1rem;
+            }
+            
+            nav a {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            main {
+                padding: 0 1rem;
+                margin: 2rem auto;
+            }
+            
+            section {
+                padding: 2rem;
+                margin: 2rem 0;
+            }
+            
+            section h2 {
+                font-size: 2rem;
+            }
+            
+            #home h2 {
+                font-size: 2.5rem;
+            }
+            
+            #home p {
+                font-size: 1.1rem;
+            }
+            
+            .event-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .registration-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .registration-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .filters {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .filters input {
+                min-width: 100%;
+            }
+            
+            .user-filter {
+                padding: 1.5rem;
+            }
+            
+            .user-filter button {
+                margin-left: 0;
+                margin-top: 1rem;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎓 College Event Manager</h1>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="login.html">Login/Register</a>
+            <a href="#events">Events</a>
+            <a href="#register">Register</a>
+            <a href="#my-events">My Events</a>
+            <a href="#profile">Profile</a>
+            <a href="#admin">Admin</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Home Section -->
+        <section id="home">
+            <h2>Welcome to College Event Manager</h2>
+            <p>Find and register for exciting college events</p>
+            <p>Manage your profile and track your registrations all in one place!</p>
+        </section>
+
+        
+        <!-- Events Section -->
+        <section id="events">
+            <h2>Upcoming Events</h2>
+            
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="Search events...">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="tech">Tech</option>
+                    <option value="sports">Sports</option>
+                    <option value="cultural">Cultural</option>
+                </select>
+                <input type="date" id="dateFilter">
+            </div>
+            
+            <div class="event-list" id="eventList">
+                <!-- Events will be populated here -->
+            </div>
+        </section>
+
+        <!-- Registration Section -->
+        <section id="register">
+            <h2>Event Registration</h2>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="name">Full Name:</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="event">Event:</label>
+                    <input type="text" id="event" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <button type="submit">Submit Registration</button>
+            </form>
+        </section>
+
+        <!-- My Events Section -->
+        <section id="my-events">
+            <h2>My Registered Events</h2>
+            <div class="user-filter">
+                <div class="form-group">
+                    <label for="userEmailFilter">Enter your email to view your events:</label>
+                    <input type="email" id="userEmailFilter" placeholder="your.email@example.com">
+                    <button onclick="filterUserEvents()">View My Events</button>
+                </div>
+            </div>
+            <div id="userEventsList" class="event-list">
+                <p class="no-events">Please enter your email to view your registered events</p>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile">
+            <h2>User Profile</h2>
+            <div class="profile-container">
+                <div class="profile-info">
+                    <div class="form-group">
+                        <label for="profileName">Full Name:</label>
+                        <input type="text" id="profileName" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="profileEmail">Email:</label>
+                        <input type="email" id="profileEmail" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="profilePhone">Phone:</label>
+                        <input type="tel" id="profilePhone" placeholder="Enter your phone number">
+                    </div>
+                    <div class="form-group">
+                        <label for="profileDepartment">Department:</label>
+                        <input type="text" id="profileDepartment" placeholder="Enter your department">
+                    </div>
+                    <div class="form-group">
+                        <label for="profileYear">Year:</label>
+                        <select id="profileYear">
+                            <option value="">Select Year</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                    <button class="save-profile-btn" onclick="saveProfile()">Save Profile</button>
+                </div>
+                <div class="profile-stats">
+                    <h3>Your Statistics</h3>
+                    <div class="stat-card">
+                        <span class="stat-number" id="totalEvents">0</span>
+                        <span class="stat-label">Total Events Registered</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="upcomingEvents">0</span>
+                        <span class="stat-label">Upcoming Events</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Section -->
+        <section id="admin">
+            <h2>Admin Dashboard</h2>
+            
+            <div class="dashboard-cards">
+                <div class="dashboard-card">
+                    <h3>Total Events</h3>
+                    <div class="counter" id="totalEventsCounter">3</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Total Users</h3>
+                    <div class="counter" id="totalUsers">0</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Total Registrations</h3>
+                    <div class="counter" id="totalRegistrations">0</div>
+                </div>
+            </div>
+
+            <div class="admin-controls">
+                <button onclick="showRegistrations()" class="admin-btn">View All Registrations</button>
+                <button onclick="refreshDashboard()" class="admin-btn">Refresh Dashboard</button>
+            </div>
+        </section>
+
+        <!-- Registrations Management Section -->
+        <section id="registrations" class="hidden">
+            <h2>All Registrations</h2>
+            <div class="search-bar">
+                <input type="text" id="adminSearchInput" placeholder="Search by name, email, or event..." onkeyup="searchRegistrations()">
+            </div>
+            <div class="registrations-list" id="registrationsList">
+                <!-- Registrations will be populated here -->
+            </div>
+            <button onclick="hideRegistrations()" class="back-btn">Back to Dashboard</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 College Event Manager. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Global variables
+        let registrations = [];
+        let events = [
+            {
+                id: 1,
+                title: "Tech Symposium",
+                category: "tech",
+                date: "2024-12-15",
+                location: "Main Auditorium",
+                description: "Join us for a day of technology presentations and workshops.",
+                capacity: 50,
+                registered: 0
+            },
+            {
+                id: 2,
+                title: "Basketball Tournament",
+                category: "sports",
+                date: "2024-12-20",
+                location: "Sports Complex",
+                description: "Inter-department basketball championship.",
+                capacity: 30,
+                registered: 0
+            },
+            {
+                id: 3,
+                title: "Cultural Fest",
+                category: "cultural",
+                date: "2024-12-25",
+                location: "Open Ground",
+                description: "Annual cultural festival with music and dance performances.",
+                capacity: 100,
+                registered: 0
+            }
+        ];
+
+        // Event Management Functions
+        function showRegistration(eventName) {
+            document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('event').value = eventName;
+            document.getElementById('name').focus();
+        }
+
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const event = document.getElementById('event').value;
+            const phone = document.getElementById('phone').value;
+            
+            const registration = {
+                id: registrations.length + 1,
+                name: name,
+                email: email,
+                event: event,
+                phone: phone,
+                date: new Date().toLocaleDateString()
+            };
+            
+            registrations.push(registration);
+            localStorage.setItem('eventRegistrations', JSON.stringify(registrations));
+            
+            alert('Registration successful! You have registered for: ' + event);
+            this.reset();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            console.log('New registration:', registration);
+        });
+
+        // Navigation Functions
+        const homeLink = document.querySelector('a[href="#home"]');
+        const eventsLink = document.querySelector('a[href="#events"]');
+        const registerLink = document.querySelector('a[href="#register"]');
+        const myEventsLink = document.querySelector('a[href="#my-events"]');
+        const profileLink = document.querySelector('a[href="#profile"]');
+        const adminLink = document.querySelector('a[href="#admin"]');
+
+        if (homeLink) {
+            homeLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        if (eventsLink) {
+            eventsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('events').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        if (registerLink) {
+            registerLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        if (myEventsLink) {
+            myEventsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('my-events').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        if (profileLink) {
+            profileLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('profile').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        if (adminLink) {
+            adminLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('admin').scrollIntoView({ behavior: 'smooth' });
+                updateDashboardCounters();
+            });
+        }
+
+        // Form Validation
+        document.getElementById('name').addEventListener('input', function() {
+            if (this.value.length < 2) {
+                this.style.borderColor = '#e74c3c';
+            } else {
+                this.style.borderColor = '#27ae60';
+            }
+        });
+
+        document.getElementById('email').addEventListener('input', function() {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(this.value)) {
+                this.style.borderColor = '#e74c3c';
+            } else {
+                this.style.borderColor = '#27ae60';
+            }
+        });
+
+        document.getElementById('phone').addEventListener('input', function() {
+            if (this.value.length < 10) {
+                this.style.borderColor = 'red';
+            } else {
+                this.style.borderColor = 'green';
+            }
+        });
+
+        // Event Filtering
+        document.getElementById('searchInput').addEventListener('input', filterEvents);
+        document.getElementById('categoryFilter').addEventListener('change', filterEvents);
+        document.getElementById('dateFilter').addEventListener('change', filterEvents);
+
+        function filterEvents() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            
+            const filteredEvents = events.filter(event => {
+                const matchesSearch = event.title.toLowerCase().includes(searchTerm);
+                const matchesCategory = !categoryFilter || event.category === categoryFilter;
+                const matchesDate = !dateFilter || event.date === dateFilter;
+                
+                return matchesSearch && matchesCategory && matchesDate;
+            });
+            
+            displayEvents(filteredEvents);
+        }
+
+        function displayEvents(eventsToShow = events) {
+            const eventList = document.getElementById('eventList');
+            
+            if (eventsToShow.length === 0) {
+                eventList.innerHTML = '<p>No events found.</p>';
+                return;
+            }
+            
+            let html = '';
+            eventsToShow.forEach(event => {
+                const isFull = event.registered >= event.capacity;
+                const buttonStatus = isFull ? 'disabled' : '';
+                const registrationPage = getRegistrationPage(event.title);
+                
+                html += '<div class="event-card" data-category="' + event.category + '" data-date="' + event.date + '" data-capacity="' + event.capacity + '">';
+                html += '<h3>' + event.title + '</h3>';
+                html += '<p>Date: ' + event.date + '</p>';
+                html += '<p>Location: ' + event.location + '</p>';
+                html += '<p>' + event.description + '</p>';
+                html += '<p class="capacity">Seats: <span class="current">' + event.registered + '</span>/' + event.capacity + '</p>';
+                html += '<button onclick="window.location.href=\'' + registrationPage + '\'" ' + buttonStatus + '>Register Now</button>';
+                html += '</div>';
+            });
+            
+            eventList.innerHTML = html;
+        }
+
+        function getRegistrationPage(eventTitle) {
+            const pageMap = {
+                'Tech Symposium': 'register-tech-symposium.html',
+                'Basketball Tournament': 'register-basketball-tournament.html',
+                'Cultural Fest': 'register-cultural-fest.html'
+            };
+            return pageMap[eventTitle] || '#register';
+        }
+
+        function updateEventCapacity() {
+            events.forEach(event => {
+                const eventRegistrations = registrations.filter(reg => reg.event === event.title);
+                event.registered = eventRegistrations.length;
+            });
+        }
+
+        // My Events Functions
+        function filterUserEvents() {
+            const userEmail = document.getElementById('userEmailFilter').value.trim();
+            
+            if (!userEmail) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            const userRegistrations = registrations.filter(reg => 
+                reg.email.toLowerCase() === userEmail.toLowerCase()
+            );
+            
+            const userEventsList = document.getElementById('userEventsList');
+            
+            if (userRegistrations.length === 0) {
+                userEventsList.innerHTML = '<p class="no-events">No events found for this email address</p>';
+                return;
+            }
+            
+            let eventsHTML = '';
+            userRegistrations.forEach(registration => {
+                eventsHTML += `
+                    <div class="user-event-card">
+                        <h4>${registration.event}</h4>
+                        <p><strong>Name:</strong> ${registration.name}</p>
+                        <p><strong>Email:</strong> ${registration.email}</p>
+                        <p><strong>Phone:</strong> ${registration.phone}</p>
+                        <p class="registration-date"><strong>Registered on:</strong> ${registration.date}</p>
+                    </div>
+                `;
+            });
+            
+            userEventsList.innerHTML = eventsHTML;
+        }
+
+        // Profile Functions
+        function saveProfile() {
+            const profile = {
+                name: document.getElementById('profileName').value,
+                email: document.getElementById('profileEmail').value,
+                phone: document.getElementById('profilePhone').value,
+                department: document.getElementById('profileDepartment').value,
+                year: document.getElementById('profileYear').value
+            };
+            
+            if (!profile.email) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            localStorage.setItem('userProfile', JSON.stringify(profile));
+            alert('Profile saved successfully!');
+            updateUserStats(profile.email);
+        }
+
+        function loadProfile() {
+            const storedProfile = localStorage.getItem('userProfile');
+            if (storedProfile) {
+                const profile = JSON.parse(storedProfile);
+                document.getElementById('profileName').value = profile.name || '';
+                document.getElementById('profileEmail').value = profile.email || '';
+                document.getElementById('profilePhone').value = profile.phone || '';
+                document.getElementById('profileDepartment').value = profile.department || '';
+                document.getElementById('profileYear').value = profile.year || '';
+                
+                if (profile.email) {
+                    updateUserStats(profile.email);
+                }
+            }
+        }
+
+        function updateUserStats(userEmail) {
+            const userRegistrations = registrations.filter(reg => 
+                reg.email.toLowerCase() === userEmail.toLowerCase()
+            );
+            
+            document.getElementById('totalEvents').textContent = userRegistrations.length;
+            
+            const today = new Date();
+            const upcomingEvents = userRegistrations.filter(reg => {
+                const eventDate = new Date(reg.date);
+                return eventDate >= today;
+            });
+            
+            document.getElementById('upcomingEvents').textContent = upcomingEvents.length;
+        }
+
+        // Admin Dashboard Functions
+        function refreshDashboard() {
+            updateDashboardCounters();
+            console.log('Dashboard refreshed');
+        }
+
+        function updateDashboardCounters() {
+            const totalEvents = events.length;
+            const uniqueUsers = new Set(registrations.map(reg => reg.email)).size;
+            const totalRegistrations = registrations.length;
+            
+            document.getElementById('totalEventsCounter').textContent = totalEvents;
+            document.getElementById('totalUsers').textContent = uniqueUsers;
+            document.getElementById('totalRegistrations').textContent = totalRegistrations;
+        }
+
+        function showRegistrations() {
+            document.getElementById('admin').classList.add('hidden');
+            document.getElementById('registrations').classList.remove('hidden');
+            displayAllRegistrations();
+        }
+
+        function hideRegistrations() {
+            document.getElementById('registrations').classList.add('hidden');
+            document.getElementById('admin').classList.remove('hidden');
+        }
+
+        function displayAllRegistrations(filteredRegistrations = null) {
+            const registrationsList = document.getElementById('registrationsList');
+            const registrationsToDisplay = filteredRegistrations || registrations;
+            
+            if (registrationsToDisplay.length === 0) {
+                registrationsList.innerHTML = '<p>No registrations found.</p>';
+                return;
+            }
+            
+            registrationsList.innerHTML = registrationsToDisplay.map(registration => `
+                <div class="registration-item">
+                    <div class="registration-info">
+                        <h4>${registration.name}</h4>
+                        <p><strong>Email:</strong> ${registration.email}</p>
+                        <p><strong>Event:</strong> ${registration.event}</p>
+                        <p><strong>Phone:</strong> ${registration.phone}</p>
+                        <p><strong>Date:</strong> ${registration.date}</p>
+                        <span class="status-badge status-${registration.status || 'pending'}">${registration.status || 'pending'}</span>
+                    </div>
+                    <div class="registration-actions">
+                        ${!registration.status || registration.status === 'pending' ? `
+                            <button class="approve-btn" onclick="updateRegistrationStatus(${registration.id}, 'approved')">Approve</button>
+                            <button class="reject-btn" onclick="updateRegistrationStatus(${registration.id}, 'rejected')">Reject</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateRegistrationStatus(registrationId, status) {
+            const registration = registrations.find(reg => reg.id === registrationId);
+            if (registration) {
+                registration.status = status;
+                localStorage.setItem('eventRegistrations', JSON.stringify(registrations));
+                displayAllRegistrations();
+                updateDashboardCounters();
+                
+                const action = status === 'approved' ? 'approved' : 'rejected';
+                console.log(`Registration ${registrationId} ${action}`);
+            }
+        }
+
+        function searchRegistrations() {
+            const searchTerm = document.getElementById('adminSearchInput').value.toLowerCase();
+            
+            if (searchTerm === '') {
+                displayAllRegistrations();
+                return;
+            }
+            
+            const filteredRegistrations = registrations.filter(registration => 
+                registration.name.toLowerCase().includes(searchTerm) ||
+                registration.email.toLowerCase().includes(searchTerm) ||
+                registration.event.toLowerCase().includes(searchTerm)
+            );
+            
+            displayAllRegistrations(filteredRegistrations);
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            const stored = localStorage.getItem('eventRegistrations');
+            if (stored) {
+                registrations = JSON.parse(stored);
+            }
+            
+            const storedEvents = localStorage.getItem('events');
+            if (storedEvents) {
+                events = JSON.parse(storedEvents);
+            }
+            
+            // Auto-fill user info if logged in
+            const currentUserEmail = localStorage.getItem('currentUserEmail');
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUserEmail && currentUser) {
+                const userData = JSON.parse(currentUser);
+                document.getElementById('email').value = currentUserEmail;
+                document.getElementById('name').value = userData.name || '';
+            }
+            
+            updateEventCapacity();
+            displayEvents();
+            updateDashboardCounters();
+            loadProfile();
+        });
+    </script>
+</body>
+</html>

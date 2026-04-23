@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Events - College Event Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary-color: #22d3ee;
+            --accent-color: #f97316;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --dark-bg: #1e293b;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            z-index: -1;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+
+        header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+
+        nav a:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        nav a:hover::before {
+            opacity: 1;
+        }
+
+        nav a.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+        }
+
+        .page-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .user-filter {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .user-filter h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .filter-form {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .filter-group input {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background: var(--card-bg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .filter-btn {
+            padding: 0.875rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .events-container {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .events-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--success-color), var(--secondary-color));
+        }
+
+        .events-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .events-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .events-count {
+            background: var(--light-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .user-events-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .user-event-card {
+            background: var(--light-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .user-event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--success-color), var(--secondary-color));
+        }
+
+        .user-event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .event-header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .event-title-section h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-title-section h4::before {
+            content: '✅';
+            font-size: 1.1rem;
+        }
+
+        .event-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .category-tech {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+        }
+
+        .category-sports {
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--accent-color);
+        }
+
+        .category-cultural {
+            background: rgba(236, 72, 153, 0.1);
+            color: #ec4899;
+        }
+
+        .event-date-badge {
+            background: var(--card-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .event-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .detail-item i {
+            color: var(--primary-color);
+            width: 16px;
+        }
+
+        .registration-info {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .registration-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .registration-info strong {
+            color: var(--text-primary);
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .event-action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .action-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .action-secondary {
+            background: var(--light-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .no-events {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .no-events i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .no-events h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .no-events p {
+            margin-bottom: 2rem;
+        }
+
+        .no-events .cta-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .no-events .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        footer {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            nav {
+                gap: 1rem;
+            }
+            
+            nav a {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            main {
+                padding: 0 1rem;
+                margin: 2rem auto;
+            }
+            
+            .page-header {
+                padding: 2rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .filter-form {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                min-width: 100%;
+            }
+            
+            .events-container {
+                padding: 2rem;
+            }
+            
+            .event-header-info {
+                flex-direction: column;
+                align-items: start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎓 College Event Manager</h1>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="login.html">Login/Register</a>
+            <a href="events.html">Events</a>
+            <a href="my-events.html" class="active">My Events</a>
+            <a href="profile.html">Profile</a>
+            <a href="admin.html">Admin</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <h1 class="page-title">My Registered Events</h1>
+            <p class="page-subtitle">View and manage all your event registrations</p>
+        </section>
+
+        <section class="user-filter">
+            <h3>Find Your Events</h3>
+            <div class="filter-form">
+                <div class="filter-group">
+                    <label for="userEmailFilter">Email Address</label>
+                    <input type="email" id="userEmailFilter" placeholder="Enter your email address">
+                </div>
+                <button class="filter-btn" onclick="filterUserEvents()">
+                    <i class="fas fa-search"></i>
+                    View My Events
+                </button>
+            </div>
+        </section>
+
+        <section class="events-container">
+            <div class="events-header">
+                <h2 class="events-title">Your Events</h2>
+                <div class="events-count" id="eventsCount">0 Events</div>
+            </div>
+            <div class="user-events-list" id="userEventsList">
+                <div class="no-events">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>No Events Found</h3>
+                    <p>Enter your email address to view your registered events</p>
+                    <a href="events.html" class="cta-btn">
+                        <i class="fas fa-plus-circle"></i>
+                        Browse Events
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 College Event Manager. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let registrations = [];
+
+        // Event category mapping
+        function getEventCategory(eventTitle) {
+            if (eventTitle.toLowerCase().includes('tech')) return 'tech';
+            if (eventTitle.toLowerCase().includes('basketball')) return 'sports';
+            if (eventTitle.toLowerCase().includes('cultural')) return 'cultural';
+            return 'general';
+        }
+
+        // Filter user events
+        function filterUserEvents() {
+            const userEmail = document.getElementById('userEmailFilter').value.trim();
+            
+            if (!userEmail) {
+                showNotification('Please enter your email address', 'error');
+                return;
+            }
+            
+            const userRegistrations = registrations.filter(reg => 
+                reg.email.toLowerCase() === userEmail.toLowerCase()
+            );
+            
+            displayUserEvents(userRegistrations, userEmail);
+        }
+
+        // Display user events
+        function displayUserEvents(userRegistrations, userEmail) {
+            const userEventsList = document.getElementById('userEventsList');
+            const eventsCount = document.getElementById('eventsCount');
+            
+            if (userRegistrations.length === 0) {
+                userEventsList.innerHTML = `
+                    <div class="no-events">
+                        <i class="fas fa-calendar-times"></i>
+                        <h3>No Events Found</h3>
+                        <p>You haven't registered for any events yet with email: ${userEmail}</p>
+                        <a href="events.html" class="cta-btn">
+                            <i class="fas fa-plus-circle"></i>
+                            Browse Events
+                        </a>
+                    </div>
+                `;
+                eventsCount.textContent = '0 Events';
+                return;
+            }
+            
+            eventsCount.textContent = `${userRegistrations.length} Events`;
+            
+            let eventsHTML = '';
+            userRegistrations.forEach(registration => {
+                const category = getEventCategory(registration.event);
+                
+                eventsHTML += `
+                    <div class="user-event-card">
+                        <div class="event-header-info">
+                            <div class="event-title-section">
+                                <h4>${registration.event}</h4>
+                                <span class="event-category category-${category}">${category}</span>
+                            </div>
+                            <div class="event-date-badge">
+                                <i class="fas fa-calendar"></i>
+                                ${formatDate(registration.date)}
+                            </div>
+                        </div>
+                        
+                        <div class="event-details">
+                            <div class="detail-item">
+                                <i class="fas fa-user"></i>
+                                <span><strong>Name:</strong> ${registration.name}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-envelope"></i>
+                                <span><strong>Email:</strong> ${registration.email}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-phone"></i>
+                                <span><strong>Phone:</strong> ${registration.phone}</span>
+                            </div>
+                            ${registration.rollNumber ? `
+                            <div class="detail-item">
+                                <i class="fas fa-id-card"></i>
+                                <span><strong>Roll:</strong> ${registration.rollNumber}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="registration-info">
+                            <p><strong>Registration Date:</strong> ${registration.date}</p>
+                            <p><strong>Registration ID:</strong> #${registration.id}</p>
+                            <p><strong>Status:</strong> <span style="color: var(--success-color); font-weight: 600;">Confirmed</span></p>
+                        </div>
+                        
+                        <div class="event-actions">
+                            <button class="event-action-btn action-primary" onclick="downloadTicket(${registration.id})">
+                                <i class="fas fa-download"></i>
+                                Download Ticket
+                            </button>
+                            <button class="event-action-btn action-secondary" onclick="shareEvent(${registration.id})">
+                                <i class="fas fa-share-alt"></i>
+                                Share
+                            </button>
+                            <button class="event-action-btn action-secondary" onclick="cancelRegistration(${registration.id})">
+                                <i class="fas fa-times-circle"></i>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            userEventsList.innerHTML = eventsHTML;
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        // Download ticket (placeholder function)
+        function downloadTicket(registrationId) {
+            const registration = registrations.find(reg => reg.id === registrationId);
+            if (registration) {
+                alert(`Ticket Download:\n\nEvent: ${registration.event}\nName: ${registration.name}\nEmail: ${registration.email}\nRegistration ID: #${registration.id}\n\nThis feature would generate a PDF ticket for download.`);
+            }
+        }
+
+        // Share event (placeholder function)
+        function shareEvent(registrationId) {
+            const registration = registrations.find(reg => reg.id === registrationId);
+            if (registration) {
+                const shareText = `I'm attending ${registration.event}! 🎉`;
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Event Registration',
+                        text: shareText,
+                        url: window.location.href
+                    });
+                } else {
+                    alert(`Share this event:\n\n${shareText}\n\nCopy this text to share with friends!`);
+                }
+            }
+        }
+
+        // Cancel registration (placeholder function)
+        function cancelRegistration(registrationId) {
+            const registration = registrations.find(reg => reg.id === registrationId);
+            if (registration && confirm(`Are you sure you want to cancel your registration for ${registration.event}?`)) {
+                // Remove registration from array
+                registrations = registrations.filter(reg => reg.id !== registrationId);
+                localStorage.setItem('eventRegistrations', JSON.stringify(registrations));
+                
+                // Refresh display
+                const userEmail = document.getElementById('userEmailFilter').value.trim();
+                if (userEmail) {
+                    filterUserEvents();
+                }
+                
+                showNotification('Registration cancelled successfully', 'success');
+            }
+        }
+
+        // Show notification (placeholder function)
+        function showNotification(message, type) {
+            // Simple alert for now - could be enhanced with a toast notification
+            alert(message);
+        }
+
+        // Auto-fill email if user is logged in
+        function autoFillEmail() {
+            const currentUserEmail = localStorage.getItem('currentUserEmail');
+            if (currentUserEmail) {
+                document.getElementById('userEmailFilter').value = currentUserEmail;
+                filterUserEvents();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load registrations from localStorage
+            const stored = localStorage.getItem('eventRegistrations');
+            if (stored) {
+                registrations = JSON.parse(stored);
+            }
+            
+            // Auto-fill email if user is logged in
+            autoFillEmail();
+        });
+    </script>
+</body>
+</html>

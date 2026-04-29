@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Event Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <h1>College Event Manager</h1>
+    <nav>
+        <a href="#" onclick="showPage('home'); return false;">Home</a>
+        <a href="#" onclick="showPage('events'); return false;">Events</a>
+        <a href="auth.html" id="navLogin">Login</a>
+        <a href="auth.html" id="navSignup">Sign Up</a>
+        <a href="#" onclick="showPage('my-events'); return false;" id="navMyEvents" style="display:none">My Events</a>
+        <a href="#" onclick="showPage('profile'); return false;" id="navProfile" style="display:none">Profile</a>
+        <a href="#" onclick="showPage('admin'); return false;" id="navAdmin" style="display:none">Admin</a>
+        <a href="#" onclick="doLogout(); return false;" id="navLogout" style="display:none">Logout</a>
+    </nav>
+</header>
+
+<main>
+
+<!-- ══ HOME PAGE ══ -->
+<section id="home" class="active">
+    <div class="hero-wrap">
+        <div class="hero-copy">
+            <span class="eyebrow">Campus events made simple</span>
+            <h2>Discover, register, and enjoy college events in one place.</h2>
+            <p id="homeWelcome">Browse the latest events, register in one place, and let the backend keep your data in sync.</p>
+            <div class="hero-actions">
+                <a class="cta-btn primary" href="#" onclick="showPage('events'); return false;">Browse Events</a>
+                <a class="cta-btn secondary" href="auth.html" id="heroLoginBtn">Login</a>
+            </div>
+        </div>
+
+        <div class="hero-panel">
+            <h3>Quick Stats</h3>
+            <p>Live data from the database.</p>
+            <div class="mini-stat">
+                <div><strong id="statEvents">—</strong><span>Events</span></div>
+                <div><strong id="statUsers">—</strong><span>Users</span></div>
+                <div><strong id="statRegs">—</strong><span>Registrations</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature-card">
+            <h3>🔍 Clean browsing</h3>
+            <p>Use the events page to find what you want without extra clutter.</p>
+        </div>
+        <div class="feature-card">
+            <h3>✅ Direct registration</h3>
+            <p>Each event opens the registration form directly inside the app.</p>
+        </div>
+        <div class="feature-card">
+            <h3>🔐 Simple login</h3>
+            <p>Login once and your details are reused automatically on the event form.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ══ EVENTS PAGE ══ -->
+<section id="events">
+    <h2>Upcoming Events</h2>
+    <div class="filters">
+        <input type="text" id="searchInput" placeholder="Search events..." oninput="filterEvents()">
+        <select id="categoryFilter" onchange="filterEvents()">
+            <option value="">All Categories</option>
+            <option value="tech">Tech</option>
+            <option value="sports">Sports</option>
+            <option value="cultural">Cultural</option>
+        </select>
+        <input type="date" id="dateFilter" onchange="filterEvents()">
+    </div>
+    <div class="event-list" id="eventList">
+        <p style="text-align:center; color:#617187;">Loading events from database...</p>
+    </div>
+</section>
+
+<!-- ══ EVENT REGISTRATION PAGE ══ -->
+<section id="event-register">
+    <h2>Register for Event</h2>
+
+    <div style="background:rgba(37,99,235,0.08); border:1px solid rgba(37,99,235,0.2); border-radius:12px; padding:16px 20px; margin-bottom:24px;">
+        <p style="font-size:13px; color:#617187; margin-bottom:4px;">You are registering for:</p>
+        <h3 id="selectedEventName" style="color:#1d4ed8; font-size:20px;"></h3>
+    </div>
+
+    <div class="profile-info" style="max-width:480px;">
+        <div id="regMsg" style="display:none; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-size:14px;"></div>
+
+        <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="regFullName" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+            <label>Email *</label>
+            <input type="email" id="regEmail" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="regPhone" placeholder="Enter your phone number (optional)">
+        </div>
+
+        <div style="display:flex; gap:12px; margin-top:8px;">
+            <button onclick="submitEventRegistration()" style="background:linear-gradient(135deg,#2563eb,#1d4ed8); border-radius:999px; color:white; border:none; padding:12px 24px; cursor:pointer; font-weight:700; font-size:14px;">
+                ✅ Confirm Registration
+            </button>
+            <button onclick="showPage('events')" style="background:transparent; border:1px solid #dbe4ee; border-radius:999px; padding:12px 24px; cursor:pointer; font-weight:600; color:#617187; font-size:14px;">
+                Cancel
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ══ MY EVENTS PAGE ══ -->
+<section id="my-events">
+    <h2>My Registered Events</h2>
+    <div class="user-filter">
+        <div class="form-group">
+            <label>Enter your email to view your registered events:</label>
+            <input type="email" id="myEventEmail" placeholder="your.email@example.com">
+            <button onclick="loadMyEvents()">View My Events</button>
+        </div>
+    </div>
+    <div id="userEventsList" class="event-list">
+        <p class="no-events">Enter your email above to see your registered events.</p>
+    </div>
+</section>
+
+<!-- ══ PROFILE PAGE ══ -->
+<section id="profile">
+    <h2>User Profile</h2>
+    <div class="profile-container">
+        <div class="profile-info">
+            <div id="profileMsg" style="display:none; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-size:14px;"></div>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="profileName" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="profileEmail" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label>Roll Number</label>
+                <input type="text" id="profileRoll" placeholder="Your roll number" readonly style="background:#f5f5f5;">
+            </div>
+            <div class="form-group">
+                <label>Department</label>
+                <input type="text" id="profileDept" placeholder="Your department" readonly style="background:#f5f5f5;">
+            </div>
+
+            <button onclick="saveProfile()">Save Profile</button>
+        </div>
+
+        <div class="profile-stats">
+            <h3>Your Statistics</h3>
+            <div class="stat-card">
+                <span class="stat-number" id="profileTotalRegs">0</span>
+                <span class="stat-label">Events Registered</span>
+            </div>
+            <div class="stat-card" style="margin-top:12px;">
+                <span class="stat-number" id="profileUsername" style="font-size:1.2rem;">—</span>
+                <span class="stat-label">Username</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ ADMIN PAGE ══ -->
+<section id="admin">
+    <h2>Admin Dashboard</h2>
+
+    <div class="dashboard-cards">
+        <div class="dashboard-card">
+            <h3>Total Events</h3>
+            <div class="counter" id="adminTotalEvents">—</div>
+        </div>
+        <div class="dashboard-card">
+            <h3>Total Users</h3>
+            <div class="counter" id="adminTotalUsers">—</div>
+        </div>
+        <div class="dashboard-card">
+            <h3>Total Registrations</h3>
+            <div class="counter" id="adminTotalRegistrations">—</div>
+        </div>
+    </div>
+
+    <div class="admin-controls">
+        <button onclick="loadAdminData()" class="admin-btn">🔄 Refresh Dashboard</button>
+    </div>
+
+    <h3 style="margin: 24px 0 12px; color:#2c3e50;">All Users</h3>
+    <div class="registrations-list" id="adminUsersList">
+        <p style="color:#617187; text-align:center; padding:20px;">Click Refresh to load data</p>
+    </div>
+
+    <h3 style="margin: 24px 0 12px; color:#2c3e50;">All Event Registrations</h3>
+    <div class="registrations-list" id="adminRegsList">
+        <p style="color:#617187; text-align:center; padding:20px;">Click Refresh to load data</p>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <p>&copy; 2024 College Event Manager. All rights reserved.</p>
+</footer>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// CONFIGURATION
+// ════════════════════════════════════════════════════════════
+const API = 'api';
+let currentUser = null;
+let allEvents = [];
+
+// ════════════════════════════════════════════════════════════
+// API HELPER
+// ════════════════════════════════════════════════════════════
+async function callAPI(endpoint, method = 'GET', data = null) {
+    const options = {
+        method,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    };
+    if (data && method === 'POST') {
+        const params = new URLSearchParams();
+        for (const key in data) params.append(key, data[key]);
+        options.body = params;
+    }
+    const res = await fetch(`${API}${endpoint}`, options);
+    return await res.json();
+}
+
+// ════════════════════════════════════════════════════════════
+// PAGE SWITCHER
+// ════════════════════════════════════════════════════════════
+function showPage(pageId) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    const page = document.getElementById(pageId);
+    if (page) page.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (pageId === 'home')      loadHomeStats();
+    if (pageId === 'events')    loadEvents();
+    if (pageId === 'profile')   loadProfile();
+    if (pageId === 'admin')     loadAdminData();
+    if (pageId === 'my-events' && currentUser) {
+        document.getElementById('myEventEmail').value = currentUser.email || '';
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+// SHOW MESSAGE HELPER
+// ════════════════════════════════════════════════════════════
+function showMsg(elementId, text, type) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    el.style.display = 'block';
+    el.style.background = type === 'success' ? '#dcfce7' : '#fee2e2';
+    el.style.color      = type === 'success' ? '#15803d' : '#dc2626';
+    el.style.border     = type === 'success' ? '1px solid #bbf7d0' : '1px solid #fecaca';
+    el.textContent = text;
+    setTimeout(() => el.style.display = 'none', 4000);
+}
+
+// ════════════════════════════════════════════════════════════
+// UPDATE NAVBAR
+// ════════════════════════════════════════════════════════════
+function updateNavbar() {
+    const loggedIn = currentUser !== null;
+
+    document.getElementById('navLogin').style.display    = loggedIn ? 'none' : 'inline';
+    document.getElementById('navSignup').style.display   = loggedIn ? 'none' : 'inline';
+    document.getElementById('navMyEvents').style.display = loggedIn ? 'inline' : 'none';
+    document.getElementById('navProfile').style.display  = loggedIn ? 'inline' : 'none';
+    document.getElementById('navAdmin').style.display    = loggedIn ? 'inline' : 'none';
+    document.getElementById('navLogout').style.display   = loggedIn ? 'inline' : 'none';
+
+    const heroBtn = document.getElementById('heroLoginBtn');
+    if (loggedIn && heroBtn) {
+        heroBtn.textContent = 'My Profile';
+        heroBtn.href = '#';
+        heroBtn.onclick = () => { showPage('profile'); return false; };
+    } else if (heroBtn) {
+        heroBtn.textContent = 'Login';
+        heroBtn.href = 'auth.html';
+        heroBtn.onclick = null;
+    }
+
+    if (loggedIn) {
+        const homeWelcome = document.getElementById('homeWelcome');
+        if (homeWelcome) {
+            homeWelcome.textContent = `Welcome back, ${currentUser.fullName || currentUser.username}! Ready to explore events?`;
+        }
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+// LOGOUT
+// ════════════════════════════════════════════════════════════
+function doLogout() {
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    updateNavbar();
+    showPage('home');
+}
+
+// ════════════════════════════════════════════════════════════
+// LOAD EVENTS
+// ════════════════════════════════════════════════════════════
+async function loadEvents() {
+    const list = document.getElementById('eventList');
+    try {
+        const result = await callAPI('/events');
+        if (result.success && result.data) {
+            allEvents = result.data;
+            displayEvents(allEvents);
+        } else {
+            list.innerHTML = '<p style="text-align:center; color:red;">Could not load events.</p>';
+        }
+    } catch (e) {
+        list.innerHTML = '<p style="text-align:center; color:red;">Connection error!</p>';
+    }
+}
+
+function displayEvents(events) {
+    const list = document.getElementById('eventList');
+    if (!events || events.length === 0) {
+        list.innerHTML = '<p class="no-events">No events found.</p>';
+        return;
+    }
+    const icons = { tech: '💻', sports: '⚽', cultural: '🎭' };
+    list.innerHTML = events.map(ev => `
+        <div class="event-card" data-category="${ev.category}">
+            <h3>${icons[ev.category] || '🎪'} ${ev.title}</h3>
+            <p>📅 Date: ${ev.eventDate}</p>
+            <p>📍 Location: ${ev.location}</p>
+            <p>${ev.description || ''}</p>
+            <button onclick="openEventRegister('${ev.title.replace(/'/g, "\\'")}')">Register</button>
+        </div>
+    `).join('');
+}
+
+function filterEvents() {
+    const search   = document.getElementById('searchInput').value.toLowerCase();
+    const category = document.getElementById('categoryFilter').value;
+    const filtered = allEvents.filter(ev => {
+        const matchSearch   = ev.title.toLowerCase().includes(search) || (ev.description || '').toLowerCase().includes(search);
+        const matchCategory = !category || ev.category === category;
+        return matchSearch && matchCategory;
+    });
+    displayEvents(filtered);
+}
+
+// ════════════════════════════════════════════════════════════
+// EVENT REGISTRATION
+// ════════════════════════════════════════════════════════════
+function openEventRegister(eventTitle) {
+    if (!currentUser) {
+        alert('Please login first to register for events!');
+        window.location.href = 'auth.html';
+        return;
+    }
+    document.getElementById('selectedEventName').textContent = eventTitle;
+    document.getElementById('regFullName').value = currentUser.fullName || '';
+    document.getElementById('regEmail').value    = currentUser.email    || '';
+    document.getElementById('regPhone').value    = '';
+    showPage('event-register');
+}
+
+async function submitEventRegistration() {
+    const eventTitle = document.getElementById('selectedEventName').textContent;
+    const fullName   = document.getElementById('regFullName').value.trim();
+    const email      = document.getElementById('regEmail').value.trim();
+    const phone      = document.getElementById('regPhone').value.trim();
+
+    if (!fullName || !email) {
+        showMsg('regMsg', 'Please enter your name and email!', 'error');
+        return;
+    }
+    try {
+        const result = await callAPI('/event-registration', 'POST', { fullName, email, phone, eventTitle });
+        if (result.success) {
+            showMsg('regMsg', `✅ Successfully registered for "${eventTitle}"!`, 'success');
+            setTimeout(() => showPage('events'), 1800);
+        } else {
+            showMsg('regMsg', result.message || 'Registration failed!', 'error');
+        }
+    } catch (e) {
+        showMsg('regMsg', 'Connection error!', 'error');
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+// MY EVENTS
+// ════════════════════════════════════════════════════════════
+async function loadMyEvents() {
+    const email  = document.getElementById('myEventEmail').value.trim();
+    const myList = document.getElementById('userEventsList');
+
+    if (!email) {
+        myList.innerHTML = '<p class="no-events">Please enter your email.</p>';
+        return;
+    }
+    try {
+        const result = await callAPI(`/registrations?email=${encodeURIComponent(email)}`);
+        if (result.success && result.data && result.data.length > 0) {
+            myList.innerHTML = result.data.map(r => `
+                <div class="user-event-card">
+                    <h4>🎟️ ${r.eventTitle}</h4>
+                    <p>Name: ${r.fullName}</p>
+                    <p class="registration-date">Registered on: ${r.registeredAt}</p>
+                </div>
+            `).join('');
+        } else {
+            myList.innerHTML = '<p class="no-events">No registrations found for this email.</p>';
+        }
+    } catch (e) {
+        myList.innerHTML = '<p class="no-events">Connection error!</p>';
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+// PROFILE
+// ════════════════════════════════════════════════════════════
+async function loadProfile() {
+    if (!currentUser) { window.location.href = 'auth.html'; return; }
+
+    document.getElementById('profileUsername').textContent = currentUser.username || '—';
+
+    try {
+        const result = await callAPI(`/users/${currentUser.id}`);
+        if (result.success && result.data) {
+            const u = result.data;
+            document.getElementById('profileName').value = u.fullName     || '';
+            document.getElementById('profileEmail').value = u.email       || '';
+            document.getElementById('profileRoll').value = u.rollNumber   || '—';
+            document.getElementById('profileDept').value = u.department   || '—';
+        }
+
+        const regs = await callAPI(`/registrations?email=${encodeURIComponent(currentUser.email)}`);
+        if (regs.success) {
+            document.getElementById('profileTotalRegs').textContent = regs.data ? regs.data.length : 0;
+        }
+    } catch (e) {}
+}
+
+async function saveProfile() {
+    if (!currentUser) return;
+    const fullName = document.getElementById('profileName').value.trim();
+    const email    = document.getElementById('profileEmail').value.trim();
+
+    if (!email) { showMsg('profileMsg', 'Email is required!', 'error'); return; }
+
+    try {
+        const result = await callAPI('/profile', 'POST', { email, fullName, phone: '' });
+        if (result.success) {
+            showMsg('profileMsg', '✅ Profile saved successfully!', 'success');
+            currentUser.fullName = fullName;
+            currentUser.email    = email;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateNavbar();
+        } else {
+            showMsg('profileMsg', result.message || 'Save failed!', 'error');
+        }
+    } catch (e) {
+        showMsg('profileMsg', 'Connection error!', 'error');
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+// ADMIN DASHBOARD
+// ════════════════════════════════════════════════════════════
+async function loadAdminData() {
+    try {
+        const stats = await callAPI('/stats');
+        if (stats.success && stats.data) {
+            document.getElementById('adminTotalEvents').textContent        = stats.data.events;
+            document.getElementById('adminTotalUsers').textContent         = stats.data.users;
+            document.getElementById('adminTotalRegistrations').textContent = stats.data.registrations;
+        }
+
+        const users = await callAPI('/users');
+        if (users.success && users.data) {
+            document.getElementById('adminUsersList').innerHTML = users.data.map(u => `
+                <div class="registration-item">
+                    <div class="registration-info">
+                        <h4>${u.fullName} (@${u.username})</h4>
+                        <p>📧 ${u.email} &nbsp;|&nbsp; 🎓 ${u.department || '—'} &nbsp;|&nbsp; 🪪 ${u.rollNumber || '—'}</p>
+                        <p style="font-size:12px; color:#999;">Joined: ${u.createdAt || '—'}</p>
+                    </div>
+                </div>
+            `).join('') || '<p style="text-align:center; padding:20px; color:#999;">No users found</p>';
+        }
+
+        const regs = await callAPI('/registrations');
+        if (regs.success) {
+            if (!regs.data || regs.data.length === 0) {
+                document.getElementById('adminRegsList').innerHTML =
+                    '<p style="text-align:center; padding:20px; color:#999;">No event registrations yet</p>';
+            } else {
+                document.getElementById('adminRegsList').innerHTML = regs.data.map(r => `
+                    <div class="registration-item">
+                        <div class="registration-info">
+                            <h4>🎟️ ${r.eventTitle}</h4>
+                            <p>${r.fullName} — ${r.email} — 📞 ${r.phone || '—'}</p>
+                            <p style="font-size:12px; color:#999;">Registered: ${r.registeredAt}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+    } catch (e) {
+        console.error('Admin data error:', e);
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+// HOME STATS
+// ════════════════════════════════════════════════════════════
+async function loadHomeStats() {
+    try {
+        const result = await callAPI('/stats');
+        if (result.success && result.data) {
+            document.getElementById('statEvents').textContent = result.data.events;
+            document.getElementById('statUsers').textContent  = result.data.users;
+            document.getElementById('statRegs').textContent   = result.data.registrations;
+        }
+    } catch (e) {}
+}
+
+// ════════════════════════════════════════════════════════════
+// ON PAGE LOAD
+// ════════════════════════════════════════════════════════════
+window.addEventListener('load', async function () {
+    const saved = localStorage.getItem('currentUser');
+    if (saved) {
+        try {
+            currentUser = JSON.parse(saved);
+            updateNavbar();
+        } catch (e) {
+            localStorage.removeItem('currentUser');
+        }
+    }
+    loadHomeStats();
+});
+</script>
+
+</body>
+</html>

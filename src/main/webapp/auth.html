@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth — College Event Manager</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f4f4f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .auth-container { width: 100%; max-width: 440px; }
+    .brand { text-align: center; margin-bottom: 2rem; }
+    .brand-icon {
+      width: 52px; height: 52px;
+      background: #dbeafe;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 0.75rem;
+      font-size: 24px;
+    }
+    .brand h1 { font-size: 20px; font-weight: 600; color: #111; }
+    .brand p { font-size: 14px; color: #777; margin-top: 4px; }
+    .card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .tab-bar {
+      display: grid; grid-template-columns: 1fr 1fr;
+      background: #f4f4f0;
+      border-radius: 10px;
+      padding: 4px; gap: 4px;
+      margin-bottom: 1.75rem;
+    }
+    .tab-btn {
+      padding: 9px; border: none; background: transparent;
+      border-radius: 8px; font-size: 14px; font-weight: 500;
+      color: #888; cursor: pointer; transition: all 0.18s;
+    }
+    .tab-btn.active { background: #fff; color: #111; border: 1px solid #e5e5e5; }
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+    .toast {
+      display: none; padding: 10px 14px; border-radius: 10px;
+      font-size: 13px; margin-bottom: 1rem; border: 1px solid;
+    }
+    .toast.success { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+    .toast.error   { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: 13px; font-weight: 500; color: #555; margin-bottom: 6px; }
+    .field input, .field select {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid #d1d5db; border-radius: 10px;
+      background: #fff; color: #111; font-size: 14px;
+      outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field input:focus, .field select:focus {
+      border-color: #378add;
+      box-shadow: 0 0 0 3px rgba(55,138,221,0.12);
+    }
+    .field input::placeholder { color: #bbb; }
+    .password-wrap { position: relative; }
+    .password-wrap input { padding-right: 44px; }
+    .toggle-pw {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      font-size: 16px; color: #aaa; padding: 0;
+    }
+    .remember-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #555; cursor: pointer; }
+    .checkbox-label input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; }
+    .forgot { font-size: 13px; color: #378add; text-decoration: none; }
+    .forgot:hover { text-decoration: underline; }
+    .submit-btn {
+      width: 100%; padding: 11px;
+      background: #1d4ed8; color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: background 0.15s, transform 0.1s;
+    }
+    .submit-btn:hover  { background: #1e40af; }
+    .submit-btn:active { transform: scale(0.98); }
+    .strength-bar { display: flex; gap: 4px; margin-top: 6px; }
+    .strength-bar span { flex: 1; height: 3px; border-radius: 2px; background: #e5e5e5; transition: background 0.2s; }
+    .strength-label { font-size: 11px; color: #aaa; margin-top: 4px; }
+    .terms { font-size: 12px; color: #aaa; text-align: center; margin-top: 1rem; line-height: 1.6; }
+    .terms a { color: #378add; text-decoration: none; }
+    .back-link { text-align: center; margin-top: 1.5rem; }
+    .back-link a { font-size: 13px; color: #378add; text-decoration: none; }
+    .back-link a:hover { text-decoration: underline; }
+    @media (max-width: 480px) {
+      .form-row { grid-template-columns: 1fr; }
+      .card { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="auth-container">
+  <div class="brand">
+    <div class="brand-icon">🎓</div>
+    <h1>College Event Manager</h1>
+    <p>Your campus, your events</p>
+  </div>
+
+  <div class="card">
+    <div id="loginToast" class="toast"></div>
+    <div id="registerToast" class="toast"></div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('login')">Sign in</button>
+      <button class="tab-btn" onclick="switchTab('register')">Create account</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginPanel" class="form-panel active">
+      <div class="field">
+        <label for="loginEmail">Email or Username</label>
+        <input type="text" id="loginEmail" placeholder="you@college.edu or roll number">
+      </div>
+      <div class="field">
+        <label for="loginPassword">Password</label>
+        <div class="password-wrap">
+          <input type="password" id="loginPassword" placeholder="Enter your password">
+          <button class="toggle-pw" onclick="togglePw('loginPassword', this)">👁</button>
+        </div>
+      </div>
+      <div class="remember-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="remember"> Remember me
+        </label>
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+      <button class="submit-btn" onclick="handleLogin()">Sign in</button>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <!-- Maps to DB: username=roll, full_name=first+last, email, password, phone=dept -->
+    <div id="registerPanel" class="form-panel">
+      <div class="form-row">
+        <div class="field">
+          <label for="firstName">First name *</label>
+          <input type="text" id="firstName" placeholder="Arjun">
+        </div>
+        <div class="field">
+          <label for="lastName">Last name *</label>
+          <input type="text" id="lastName" placeholder="Sharma">
+        </div>
+      </div>
+      <div class="field">
+        <label for="regEmail">College email *</label>
+        <input type="email" id="regEmail" placeholder="you@college.edu">
+      </div>
+      <div class="field">
+        <label for="rollNo">Roll Number * (used as username)</label>
+        <input type="text" id="rollNo" placeholder="e.g. 24bcsf31">
+      </div>
+      <div class="field">
+        <label for="dept">Department *</label>
+        <select id="dept">
+          <option value="">Select department</option>
+          <option>Computer Science</option>
+          <option>Electronics</option>
+          <option>Electrical</option>
+          <option>EIA</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="regPassword">Password *</label>
+        <div class="password-wrap">
+          <input type="password" id="regPassword" placeholder="Create a password" oninput="checkStrength(this.value)">
+          <button class="toggle-pw" onclick="togglePw('regPassword', this)">👁</button>
+        </div>
+        <div class="strength-bar">
+          <span id="s1"></span><span id="s2"></span>
+          <span id="s3"></span><span id="s4"></span>
+        </div>
+        <div class="strength-label" id="strengthLabel"></div>
+      </div>
+      <div class="field">
+        <label for="confirmPassword">Confirm password *</label>
+        <div class="password-wrap">
+          <input type="password" id="confirmPassword" placeholder="Repeat password">
+          <button class="toggle-pw" onclick="togglePw('confirmPassword', this)">👁</button>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="handleRegister()">Create account</button>
+      <p class="terms">
+        By registering you agree to our
+        <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="back-link">
+    <a href="index.html">← Back to College Event Manager</a>
+  </div>
+</div>
+
+<script>
+  // ── Tab switching ──
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', isLogin ? i === 0 : i === 1);
+    });
+    document.getElementById('loginPanel').classList.toggle('active', isLogin);
+    document.getElementById('registerPanel').classList.toggle('active', !isLogin);
+    document.getElementById('loginToast').style.display = 'none';
+    document.getElementById('registerToast').style.display = 'none';
+  }
+
+  // ── Toggle password visibility ──
+  function togglePw(id, btn) {
+    const inp = document.getElementById(id);
+    if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+    else { inp.type = 'password'; btn.textContent = '👁'; }
+  }
+
+  // ── Show toast message ──
+  function showToast(id, msg, type) {
+    const t = document.getElementById(id);
+    t.textContent = msg;
+    t.className = 'toast ' + type;
+    t.style.display = 'block';
+    if (type === 'success') setTimeout(() => t.style.display = 'none', 3500);
+  }
+
+  // ── Password strength checker ──
+  function checkStrength(pw) {
+    let score = 0;
+    if (pw.length >= 8)          score++;
+    if (/[A-Z]/.test(pw))        score++;
+    if (/[0-9]/.test(pw))        score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    const colors = ['', '#ef4444', '#f97316', '#22c55e', '#16a34a'];
+    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('s' + i).style.background = i <= score ? colors[score] : '#e5e5e5';
+    }
+    const lbl = document.getElementById('strengthLabel');
+    lbl.textContent = pw.length ? labels[score] : '';
+    lbl.style.color = pw.length ? colors[score] : '#aaa';
+  }
+
+  // ── Get API base URL dynamically ──
+  function getApiBase() {
+    const match = window.location.pathname.match(/^\/([^/]+)\//);
+    return match ? `/${match[1]}/api` : '/api';
+  }
+
+  // ── API call helper ──
+  async function callAPI(endpoint, method = 'GET', data = null) {
+    const options = {
+      method,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    };
+    if (data && method === 'POST') options.body = new URLSearchParams(data);
+    const res = await fetch(`${getApiBase()}${endpoint}`, options);
+    return res.json();
+  }
+
+  // ── LOGIN ──
+  // Sends: username (email or username), password
+  // Backend checks both email and username
+  async function handleLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pw    = document.getElementById('loginPassword').value.trim();
+
+    if (!email || !pw) {
+      showToast('loginToast', 'Please fill in all fields.', 'error');
+      return;
+    }
+
+    try {
+      const result = await callAPI('/login', 'POST', {
+        username: email,   // backend accepts both username and email
+        email:    email,
+        password: pw
+      });
+
+      if (result.success) {
+        showToast('loginToast', 'Signed in successfully! Redirecting…', 'success');
+        localStorage.setItem('currentUser', JSON.stringify(result.data));
+        setTimeout(() => window.location.href = 'index.html', 1500);
+      } else {
+        showToast('loginToast', result.message || 'Login failed!', 'error');
+      }
+    } catch (e) {
+      showToast('loginToast', 'Connection error! Is Tomcat running?', 'error');
+    }
+  }
+
+  // ── REGISTER ──
+  // DB columns used: username=firstname, full_name=firstName+lastName,
+  //                  email, password,department,rollno
+  async function handleRegister() {
+    const first = document.getElementById('firstName').value.trim();
+    const last  = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const roll  = document.getElementById('rollNo').value.trim();
+    const dept  = document.getElementById('dept').value.trim();
+    const pw    = document.getElementById('regPassword').value.trim();
+    const cpw   = document.getElementById('confirmPassword').value.trim();
+
+    if (!first || !last || !email || !roll || !dept || !pw || !cpw) {
+      showToast('registerToast', 'Please fill in all fields.', 'error');
+      return;
+    }
+    if (pw.length < 6) {
+      showToast('registerToast', 'Password must be at least 6 characters.', 'error');
+      return;
+    }
+    if (pw !== cpw) {
+      showToast('registerToast', 'Passwords do not match.', 'error');
+      return;
+    }
+
+    try {
+    const result = await callAPI('/register', 'POST', {
+    username:    first,              // first name as username
+    fullName:    first + ' ' + last, // full name
+    email:       email,
+    password:    pw,
+    phone:       '',
+    department:  dept,
+    roll:        roll                // roll number separate              
+      });
+
+      if (result.success) {
+        showToast('registerToast', 'Account created! You can now sign in.', 'success');
+        setTimeout(() => switchTab('login'), 2000);
+      } else {
+        showToast('registerToast', result.message || 'Registration failed!', 'error');
+      }
+    } catch (e) {
+      showToast('registerToast', 'Connection error!', 'error');
+    }
+  }
+
+  // ── Enter key support ──
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      const isLogin = document.getElementById('loginPanel').classList.contains('active');
+      if (isLogin) handleLogin();
+      else handleRegister();
+    }
+  });
+</script>
+</body>
+</html>

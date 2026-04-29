@@ -15,13 +15,7 @@ javac -cp "lib\*" -d target\classes ^
     src\main\java\com\eventra\model\Event.java ^
     src\main\java\com\eventra\util\DatabaseConnection.java ^
     src\main\java\com\eventra\dao\UserDAO.java ^
-    src\main\java\com\eventra\dao\EventDAO.java ^
-    src\main\java\com\eventra\servlet\RegisterServlet.java ^
-    src\main\java\com\eventra\servlet\LoginServlet.java ^
-    src\main\java\com\eventra\servlet\LogoutServlet.java ^
-    src\main\java\com\eventra\servlet\EventServlet.java ^
-    src\main\java\com\eventra\servlet\EventRegistrationServlet.java ^
-    src\main\java\com\eventra\servlet\UserServlet.java
+    src\main\java\com\eventra\servlet\ApiServlet.java
 
 if %ERRORLEVEL% EQU 0 (
     echo Compilation successful!
@@ -32,9 +26,9 @@ if %ERRORLEVEL% EQU 0 (
     
     REM Download required JAR files if they don't exist
     echo Checking for required libraries...
-    if not exist "lib\mysql-connector-java-8.0.33.jar" (
-        echo Please download mysql-connector-java-8.0.33.jar and place it in lib directory
-        echo Download from: https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.33/mysql-connector-java-8.0.33.jar
+    if not exist "lib\postgresql-42.7.4.jar" (
+        echo Please download postgresql-42.7.4.jar and place it in lib directory
+        echo Download from: https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.4/postgresql-42.7.4.jar
     )
     
     if not exist "lib\gson-2.10.1.jar" (
